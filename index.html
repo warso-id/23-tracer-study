@@ -662,12 +662,13 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
 <script>
 'use strict';
-const APP_VERSION_STR='v18.1.0-fix';
+const APP_VERSION_STR='v18.1.0-prod';
 const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbxK7iksNxJO4C6-JDQyqAqdUib4uvyWvMZamJG5MBI_l-AWnVoywTMvFnGuD7jX8-Viog/exec';
 const GAS_URL=(localStorage.getItem('ts_gas_url')||DEFAULT_GAS_URL).trim().replace(/\/$/,'');
 const TOTAL_STEPS=2, RESP_PER_PAGE=50, MASTER_PER_PAGE=50;
-const AC_MIN_CHARS=2;
-const AC_DEBOUNCE=350;
+const AC_MIN_CHARS=2, AC_DEBOUNCE=350;
+const RT_POLL_MS=15000;   // 15 detik polling data baru
+const CONN_POLL_MS=45000; // 45 detik heartbeat koneksi
 
 const DEFAULT_REMINDER_SETTINGS = {
   formLink: 'https://s.id/tracer-fikom',
@@ -691,12 +692,13 @@ let dashFilters={},accScope='all',_uploadFile=null;
 let DASH_DATA=null, ACC_DATA={}, DASH_LOADING=false, CURRENT_REMINDER_ITEMS=[];
 
 // Autocomplete state
-let AC_LIST=[];
-let AC_INDEX=-1;
-let AC_TIMER=null;
-let AC_LAST_QUERY='';
-let AC_FETCHING=false;
-let AC_PICKED=null;
+let AC_LIST=[],AC_INDEX=-1,AC_TIMER=null,AC_LAST_QUERY='',AC_FETCHING=false,AC_PICKED=null;
+
+// ===== Real-time state =====
+let RT_POLL_TIMER=null;
+let CONN_TIMER=null;
+let LAST_KNOWN_STAMP='';
+let RT_LAST_SYNC_TS=0;
 
 const $=id=>document.getElementById(id);
 const $$=s=>document.querySelectorAll(s);
@@ -757,7 +759,63 @@ async function apiGet(data){
   return parseResponse(r);
 }
 
-async function checkConnection(){const dot=$('connDot'),txt=$('connText');try{await apiGet({action:'health'});if(dot)dot.className='conn-dot ok';if(txt)txt.textContent='Terhubung'}catch(e){if(dot)dot.className='conn-dot err';if(txt)txt.textContent='Terputus'}}
+/* ============================================================
+ *  CONNECTION HEALTH (heartbeat tiap 45s)
+ * ============================================================ */
+async function checkConnection(){
+  const dot=$('connDot'),txt=$('connText');
+  try{
+    await apiGet({action:'health'});
+    if(dot)dot.className='conn-dot ok';
+    if(txt)txt.textContent='Terhubung';
+    return true;
+  }catch(e){
+    if(dot)dot.className='conn-dot err';
+    if(txt)txt.textContent='Terputus';
+    return false;
+  }
+}
+function startConnHealth(){
+  if(CONN_TIMER)return;
+  CONN_TIMER=setInterval(checkConnection, CONN_POLL_MS);
+}
+
+/* ============================================================
+ *  REAL-TIME POLLING (hanya saat dashboard aktif)
+ * ============================================================ */
+function startRealtimePolling(){
+  stopRealtimePolling();
+  RT_POLL_TIMER=setInterval(async()=>{
+    if(!TOKEN || !PROFILE) return;
+    if(DASH_LOADING) return;
+    if(document.hidden) return; // hemat kuota saat tab tidak aktif
+    try{
+      const r=await apiPost({action:'realtimestats'});
+      const stamp = r && r.stamp ? r.stamp : '';
+      if(!stamp) return;
+      if(!LAST_KNOWN_STAMP){
+        LAST_KNOWN_STAMP=stamp;
+        return;
+      }
+      if(stamp !== LAST_KNOWN_STAMP){
+        LAST_KNOWN_STAMP=stamp;
+        RT_LAST_SYNC_TS=Date.now();
+        const badge=$('profileBadge');
+        if(badge){
+          const orig=badge.textContent;
+          badge.textContent='🔄 Sinkronisasi…';
+          setTimeout(()=>{badge.textContent=(PROFILE?.nama||'Pengguna')+' · '+PROFILE.role},1200);
+        }
+        // Auto refresh dashboard tanpa ganggu user
+        loadDashboardData('all', {silent:true});
+      }
+    }catch(_){/* silent */}
+  }, RT_POLL_MS);
+}
+function stopRealtimePolling(){
+  if(RT_POLL_TIMER){clearInterval(RT_POLL_TIMER);RT_POLL_TIMER=null}
+}
+
 async function refreshNonce(){try{const r=await apiGet({action:'nonce'});if(r&&r.publicNonce){PUBLIC_NONCE=r.publicNonce;return PUBLIC_NONCE}}catch(_){}try{const m=await apiGet({action:'meta'});if(m&&m.publicNonce)PUBLIC_NONCE=m.publicNonce}catch(_){}return PUBLIC_NONCE}
 async function loadMeta(){
   try{
@@ -797,19 +855,11 @@ function acRender(){
   const total = AC_LIST.length;
   box.innerHTML = AC_LIST.map((m,i)=>{
     const jjBadge = m.jenjang==='S2' ? '<span class="badge info" style="margin-left:6px">S2</span>' : (m.jenjang==='S1' ? '<span class="badge ok" style="margin-left:6px">S1</span>' : '');
-    return `
-      <div class="suggestion-item${i===AC_INDEX?' active':''}" data-idx="${i}" role="option">
-        <div class="suggestion-name">${esc(m.nama||'-')}${jjBadge}</div>
-        <div class="suggestion-meta"><b>${esc(m.nim||'-')}</b> · ${esc(m.programStudi||'-')} · Lulus ${esc(m.tahunLulus||'-')}</div>
-      </div>`;
+    return `<div class="suggestion-item${i===AC_INDEX?' active':''}" data-idx="${i}" role="option"><div class="suggestion-name">${esc(m.nama||'-')}${jjBadge}</div><div class="suggestion-meta"><b>${esc(m.nim||'-')}</b> · ${esc(m.programStudi||'-')} · Lulus ${esc(m.tahunLulus||'-')}</div></div>`;
   }).join('') + `<div class="suggestion-hint">${total} hasil · ↑↓ pilih · Enter konfirmasi · Esc tutup</div>`;
-
   acOpen();
   box.querySelectorAll('.suggestion-item').forEach(el=>{
-    el.addEventListener('mousedown', ev=>{
-      ev.preventDefault();
-      acPick(Number(el.dataset.idx));
-    });
+    el.addEventListener('mousedown', ev=>{ev.preventDefault();acPick(Number(el.dataset.idx))});
   });
 }
 
@@ -824,12 +874,8 @@ async function acFetch(q){
     AC_LIST = (r && r.matches) || [];
     AC_INDEX = AC_LIST.length ? 0 : -1;
     acRender();
-  }catch(e){
-    console.warn('[autocomplete]', e);
-    AC_LIST=[]; acClose();
-  }finally{
-    acSetLoading(false);
-  }
+  }catch(e){AC_LIST=[];acClose();}
+  finally{acSetLoading(false);}
 }
 
 function acPick(idx){
@@ -838,18 +884,14 @@ function acPick(idx){
   AC_PICKED = m;
   $('nama').value = m.nama || '';
   AC_LAST_QUERY = String(m.nama||'').toLowerCase();
-
   $('nimBox').classList.remove('hidden');
   $('prodiBox').classList.remove('hidden');
-
   $('nim').value = m.nim || '';
-  // NIM adalah source of truth — derive jenjang & prodi dari NIM
   detectFromNim();
   if(m.tahunMasuk && !val('tahunMasuk')) $('tahunMasuk').value = m.tahunMasuk;
   if(m.tahunLulus && !val('tahunLulus')) $('tahunLulus').value = m.tahunLulus;
   if(m.email && !val('email')) $('email').value = m.email;
   if(m.whatsapp && !val('whatsapp')) $('whatsapp').value = m.whatsapp;
-
   setFieldError('nama','');
   acClose();
   toast('✓ Data ditemukan: ' + m.nama + ' (' + m.nim + ')', 'ok');
@@ -860,54 +902,32 @@ function acScrollActive(){
   const active = box?.querySelector('.suggestion-item.active');
   if(active && active.scrollIntoView) active.scrollIntoView({block:'nearest'});
 }
-
 function onNamaInput(){
   const n = val('nama');
   AC_PICKED = null;
-
   if(n.length >= AC_MIN_CHARS){
     $('nimBox').classList.remove('hidden');
     $('prodiBox').classList.remove('hidden');
   } else {
     $('nimBox').classList.add('hidden');
     $('prodiBox').classList.add('hidden');
-    $('nim').value='';
-    $('programStudi').value='';
-    $('jenjang').value='';
+    $('nim').value='';$('programStudi').value='';$('jenjang').value='';
     applyJenjang('');
   }
   updateStudentBanner(val('jenjang'), n, val('nim'));
-
   if(AC_TIMER) clearTimeout(AC_TIMER);
   AC_TIMER = setTimeout(()=>acFetch(n), AC_DEBOUNCE);
 }
-
 function onNamaKeydown(e){
   const box=$('namaSuggestions');
   const isOpen = box && !box.classList.contains('hidden');
   if(!isOpen) return;
-  if(e.key==='ArrowDown'){
-    e.preventDefault();
-    AC_INDEX = AC_LIST.length ? ((AC_INDEX + 1) % AC_LIST.length) : -1;
-    acRender(); acScrollActive();
-  } else if(e.key==='ArrowUp'){
-    e.preventDefault();
-    AC_INDEX = AC_LIST.length ? ((AC_INDEX - 1 + AC_LIST.length) % AC_LIST.length) : -1;
-    acRender(); acScrollActive();
-  } else if(e.key==='Enter'){
-    if(AC_INDEX >= 0 && AC_LIST[AC_INDEX]){
-      e.preventDefault();
-      acPick(AC_INDEX);
-    }
-  } else if(e.key==='Escape'){
-    acClose();
-  }
+  if(e.key==='ArrowDown'){e.preventDefault();AC_INDEX = AC_LIST.length ? ((AC_INDEX + 1) % AC_LIST.length) : -1;acRender(); acScrollActive();}
+  else if(e.key==='ArrowUp'){e.preventDefault();AC_INDEX = AC_LIST.length ? ((AC_INDEX - 1 + AC_LIST.length) % AC_LIST.length) : -1;acRender(); acScrollActive();}
+  else if(e.key==='Enter'){if(AC_INDEX >= 0 && AC_LIST[AC_INDEX]){e.preventDefault();acPick(AC_INDEX);}}
+  else if(e.key==='Escape'){acClose();}
 }
-
-function onNamaBlur(){
-  setTimeout(()=>acClose(), 180);
-}
-
+function onNamaBlur(){setTimeout(()=>acClose(), 180);}
 function onNamaFocus(){
   const n = val('nama');
   if(n.length >= AC_MIN_CHARS){
@@ -915,39 +935,22 @@ function onNamaFocus(){
     else acFetch(n);
   }
 }
-
 document.addEventListener('click', e=>{
   const wrap=$('acWrap');
   if(wrap && !wrap.contains(e.target)) acClose();
 });
 
-/* NIM manual → auto detect prodi & jenjang (SOURCE OF TRUTH) */
 function detectFromNim(){
   const nim=val('nim');
   if(!/^\d{9}$/.test(nim)){
-    $('programStudi').value='';
-    $('jenjang').value='';
-    applyJenjang('');
+    $('programStudi').value='';$('jenjang').value='';applyJenjang('');
     if(nim.length===0) setFieldError('nim','');
     return;
   }
   const code=nim.slice(4,6);
-  if(code==='41'){
-    $('programStudi').value='S1 Ilmu Komunikasi';
-    $('jenjang').value='S1';
-    applyJenjang('S1');
-    setFieldError('nim','');
-  } else if(code==='03'){
-    $('programStudi').value='S2 Magister Ilmu Komunikasi';
-    $('jenjang').value='S2';
-    applyJenjang('S2');
-    setFieldError('nim','');
-  } else {
-    $('programStudi').value='';
-    $('jenjang').value='';
-    applyJenjang('');
-    setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');
-  }
+  if(code==='41'){$('programStudi').value='S1 Ilmu Komunikasi';$('jenjang').value='S1';applyJenjang('S1');setFieldError('nim','');}
+  else if(code==='03'){$('programStudi').value='S2 Magister Ilmu Komunikasi';$('jenjang').value='S2';applyJenjang('S2');setFieldError('nim','');}
+  else{$('programStudi').value='';$('jenjang').value='';applyJenjang('');setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');}
 }
 function applyJenjang(jenjang){
   $('groupS1')&&$('groupS1').classList.toggle('hidden',jenjang!=='S1');
@@ -976,27 +979,19 @@ function validateStep(n){
   if(n===1){
     const nama=val('nama');
     if(!nama || nama.length<3){setFieldError('nama','Nama lengkap wajib diisi (min 3 karakter).');ok=false}
-
     const nim=val('nim');
     if(!nim){setFieldError('nim','NIM wajib diisi.');ok=false}
     else if(!/^\d{9}$/.test(nim)){setFieldError('nim','NIM harus 9 digit angka.');ok=false}
-    else {
-      const code=nim.slice(4,6);
-      if(code!=='41' && code!=='03'){setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');ok=false}
-    }
-
+    else {const code=nim.slice(4,6);if(code!=='41' && code!=='03'){setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');ok=false}}
     if(!/^\d{4}$/.test(val('tahunMasuk'))){setFieldError('tahunMasuk','Tahun 4 digit.');ok=false}
     if(!/^\d{4}$/.test(val('tahunLulus'))){setFieldError('tahunLulus','Tahun 4 digit.');ok=false}
     if(!val('jenisKelamin')){setFieldError('jenisKelamin','Wajib dipilih.');ok=false}
-
     const email=val('email');
     if(!email){setFieldError('email','Email wajib diisi.');ok=false}
     else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setFieldError('email','Email tidak valid.');ok=false}
-
     const wa=val('whatsapp');
     if(!wa){setFieldError('whatsapp','Nomor WhatsApp wajib diisi.');ok=false}
     else if(!/^\d{10,15}$/.test(wa)){setFieldError('whatsapp','Nomor WhatsApp harus 10–15 digit angka.');ok=false}
-
     const jj=val('jenjang');
     if(jj==='S1' && !val('konsentrasiS1')){setFieldError('konsentrasiS1','Wajib dipilih.');ok=false}
     if(jj==='S2' && !val('konsentrasiS2')){setFieldError('konsentrasiS2','Wajib dipilih.');ok=false}
@@ -1015,9 +1010,7 @@ function validateStep(n){
       if(!radioVal('b7_masaTunggu')){setFieldError('b7_masaTunggu','Wajib diisi.');ok=false}
       if(!radioVal('b8_pendapatan')){setFieldError('b8_pendapatan','Wajib diisi.');ok=false}
     }
-    if(b5==='Wirausaha'){
-      if(!radioVal('b9_posisiWirausahaSetelah')){setFieldError('b9_posisiWirausahaSetelah','Wajib diisi.');ok=false}
-    }
+    if(b5==='Wirausaha'){if(!radioVal('b9_posisiWirausahaSetelah')){setFieldError('b9_posisiWirausahaSetelah','Wajib diisi.');ok=false}}
   }
   return ok;
 }
@@ -1050,9 +1043,8 @@ function collectPayload(){
     b7_masaTunggu: b5==='Bekerja'?radioVal('b7_masaTunggu'):'',
     b8_pendapatan: b5==='Bekerja'?radioVal('b8_pendapatan'):'',
     b9_posisiWirausahaSetelah: b5==='Wirausaha'?radioVal('b9_posisiWirausahaSetelah'):'',
-    consentData:true,
-    consentContact:false,
-    periodeId:(META&&META.periodeAktif&&(META.periodeAktif.id||META.periodeAktif.periodeId))||'',
+    consentData:true,consentContact:false,
+    periodeId:(META&&META.periodeAktif&&(META.periodeAktif.periodeId||META.periodeAktif.id))||'',
     _v: APP_VERSION_STR
   };
 }
@@ -1080,7 +1072,7 @@ async function submitTracer(){
     }catch(e){
       errMsg=e.message;const low=errMsg.toLowerCase();
       if(/lock|concurrent|sibuk|timeout/.test(low)){retry++;if(retry<3){toast(`Server padat. Retry (${retry}/3)...`,'warn');await new Promise(r=>setTimeout(r,2000*retry))}}
-      else if(/nonce|kedaluwarsa/.test(low)){await refreshNonce();retry++;if(retry<3){toast('Sesi diperbarui...','warn');await new Promise(r=>setTimeout(r,500))}}
+      else if(/nonce|kedaluwarsa|muat ulang/.test(low)){await refreshNonce();retry++;if(retry<3){toast('Sesi diperbarui...','warn');await new Promise(r=>setTimeout(r,500))}}
       else break;
     }
   }
@@ -1100,7 +1092,7 @@ async function login(){
     sessionStorage.setItem('ts_token',TOKEN);
     sessionStorage.setItem('ts_token_exp',String(TOKEN_EXP));
     sessionStorage.setItem('ts_profile',JSON.stringify(PROFILE));
-    DASH_DATA=null;ACC_DATA={};
+    DASH_DATA=null;ACC_DATA={};LAST_KNOWN_STAMP='';
     showDashboard();
     toast('Berhasil masuk sebagai '+PROFILE.role+'.','ok');
     if(r.profile.mustChangePassword){toast('Anda wajib mengganti password.','warn');openChangePasswordModal()}
@@ -1109,7 +1101,8 @@ async function login(){
 }
 async function doLogout(){
   try{await apiPost({action:'logout'})}catch(_){}
-  sessionStorage.clear();TOKEN='';PROFILE=null;DASH_DATA=null;ACC_DATA={};
+  stopRealtimePolling();
+  sessionStorage.clear();TOKEN='';PROFILE=null;DASH_DATA=null;ACC_DATA={};LAST_KNOWN_STAMP='';
   $('dashBox').classList.add('hidden');$('loginBox').classList.remove('hidden');
   $('ubahPassBtn')&&$('ubahPassBtn').classList.add('hidden');
   toast('Berhasil keluar.','ok');
@@ -1137,6 +1130,7 @@ function showDashboard(){
   respPage=1;masterPage=1;
   loadDashboardData('all');
   loadReminderSettings();
+  startRealtimePolling(); // ← mulai polling real-time
 }
 
 function destroyChart(id){if(charts[id]){try{charts[id].destroy()}catch(_){}delete charts[id]}}
@@ -1209,48 +1203,26 @@ function renderSummaryDetail(s){
     return keys.map(k=>`<div class="row"><span>${esc(k)}</span><b class="val">${obj[k]}</b></div>`).join('');
   };
   box.innerHTML=`
-    <div class="summary-card">
-      <h4>B1 — Bekerja Sebelum Lulus</h4>
+    <div class="summary-card"><h4>B1 — Bekerja Sebelum Lulus</h4>
       <div class="row"><span>Ya</span><b class="val">${s.b1Ya||0}</b></div>
       <div class="row"><span>Tidak</span><b class="val">${s.b1Tidak||0}</b></div>
     </div>
-    <div class="summary-card">
-      <h4>B2 — Jenis Institusi (Sebelum Lulus)</h4>
-      ${rowsFrom(s.b2Detail)}
-    </div>
-    <div class="summary-card">
-      <h4>B3 — Wirausaha Sebelum Lulus</h4>
+    <div class="summary-card"><h4>B2 — Jenis Institusi (Sebelum Lulus)</h4>${rowsFrom(s.b2Detail)}</div>
+    <div class="summary-card"><h4>B3 — Wirausaha Sebelum Lulus</h4>
       <div class="row"><span>Ya</span><b class="val">${s.b3Ya||0}</b></div>
       <div class="row"><span>Tidak</span><b class="val">${s.b3Tidak||0}</b></div>
     </div>
-    <div class="summary-card">
-      <h4>B4 — Posisi Wirausaha (Sebelum Lulus)</h4>
-      ${rowsFrom(s.b4Detail)}
-    </div>
-    <div class="summary-card">
-      <h4>B5 — Aktivitas Setelah Lulus</h4>
+    <div class="summary-card"><h4>B4 — Posisi Wirausaha (Sebelum Lulus)</h4>${rowsFrom(s.b4Detail)}</div>
+    <div class="summary-card"><h4>B5 — Aktivitas Setelah Lulus</h4>
       <div class="row"><span>Bekerja</span><b class="val">${s.bekerjaSetelah||0}</b></div>
       <div class="row"><span>Wirausaha</span><b class="val">${s.wirausahaSetelah||0}</b></div>
       <div class="row"><span>Melanjutkan pendidikan</span><b class="val">${s.melanjutkan||0}</b></div>
     </div>
-    <div class="summary-card">
-      <h4>B6 — Jenis Institusi (Setelah Lulus)</h4>
-      ${rowsFrom(s.b6Detail)}
-    </div>
-    <div class="summary-card">
-      <h4>B7 — Masa Tunggu Kerja</h4>
-      ${rowsFrom(s.b7Detail)}
-    </div>
-    <div class="summary-card">
-      <h4>B8 — Pendapatan Per Bulan</h4>
-      ${rowsFrom(s.b8Detail)}
-    </div>
-    <div class="summary-card">
-      <h4>B9 — Posisi Wirausaha (Setelah Lulus)</h4>
-      ${rowsFrom(s.b9Detail)}
-    </div>
-    <div class="summary-card">
-      <h4>Jenjang Responden</h4>
+    <div class="summary-card"><h4>B6 — Jenis Institusi (Setelah Lulus)</h4>${rowsFrom(s.b6Detail)}</div>
+    <div class="summary-card"><h4>B7 — Masa Tunggu Kerja</h4>${rowsFrom(s.b7Detail)}</div>
+    <div class="summary-card"><h4>B8 — Pendapatan Per Bulan</h4>${rowsFrom(s.b8Detail)}</div>
+    <div class="summary-card"><h4>B9 — Posisi Wirausaha (Setelah Lulus)</h4>${rowsFrom(s.b9Detail)}</div>
+    <div class="summary-card"><h4>Jenjang Responden</h4>
       <div class="row"><span>S1 Ilmu Komunikasi</span><b class="val">${s.s1||0}</b></div>
       <div class="row"><span>S2 Magister Ilmu Komunikasi</span><b class="val">${s.s2||0}</b></div>
     </div>`;
@@ -1266,12 +1238,7 @@ function renderRespTable(rows,pagination){
   const t=$('respTable');if(!t)return;
   t.innerHTML=(!rows||!rows.length)?'<tr><td>Tidak ada data.</td></tr>':
     `<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Jenjang</th><th>Tahun Lulus</th><th>JK</th><th>Email</th><th>WA</th><th>B1</th><th>B3</th><th>B5</th></tr>`+
-    rows.map(r=>`<tr>
-      <td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td>
-      <td>${esc(r.programStudi)}</td><td>${esc(r.jenjang)}</td><td>${esc(r.tahunLulus)}</td>
-      <td>${esc(r.jenisKelamin)}</td><td>${esc(r.email)}</td><td>${esc(r.whatsapp)}</td>
-      <td>${esc(r.b1)}</td><td>${esc(r.b3)}</td><td>${esc(r.setelahLulus)}</td>
-    </tr>`).join('');
+    rows.map(r=>`<tr><td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td>${esc(r.programStudi)}</td><td>${esc(r.jenjang)}</td><td>${esc(r.tahunLulus)}</td><td>${esc(r.jenisKelamin)}</td><td>${esc(r.email)}</td><td>${esc(r.whatsapp)}</td><td>${esc(r.b1)}</td><td>${esc(r.b3)}</td><td>${esc(r.setelahLulus)}</td></tr>`).join('');
   $('respInfo')&&($('respInfo').textContent=pagination?`Total ${pagination.total} data · Hal ${pagination.page}/${pagination.totalPages}`:'');
   const pg=$('respPagination');
   if(pg&&pagination){
@@ -1323,8 +1290,7 @@ function renderReminderTable(items){
       const emailSub=buildRedaksi(REMINDER_SETTINGS.emailSubject,x);
       const emailBody=buildRedaksi(REMINDER_SETTINGS.emailBody,x);
       const emailLink=x.EMAIL?`mailto:${x.EMAIL}?subject=${encodeURIComponent(emailSub)}&body=${encodeURIComponent(emailBody)}`:'';
-      return `<tr><td>${esc(x.NIM)}</td><td>${esc(x.NAMA)}</td><td>${esc(x.PROGRAM_STUDI)}</td><td>${esc(x.EMAIL)||'-'}</td><td>${esc(x.WHATSAPP)||'-'}</td>
-      <td><div class="reminder-actions">${waLink?`<a class="btn wa sm" href="${waLink}" target="_blank" rel="noopener">📱 WA</a>`:''}${emailLink?`<a class="btn email sm" href="${emailLink}">✉️ Email</a>`:''}</div></td></tr>`;
+      return `<tr><td>${esc(x.NIM)}</td><td>${esc(x.NAMA)}</td><td>${esc(x.PROGRAM_STUDI)}</td><td>${esc(x.EMAIL)||'-'}</td><td>${esc(x.WHATSAPP)||'-'}</td><td><div class="reminder-actions">${waLink?`<a class="btn wa sm" href="${waLink}" target="_blank" rel="noopener">📱 WA</a>`:''}${emailLink?`<a class="btn email sm" href="${emailLink}">✉️ Email</a>`:''}</div></td></tr>`;
     }).join('');
 }
 function renderAdminPanel(users,periode,audit){
@@ -1349,22 +1315,29 @@ function renderAllPanels(){
   if(PROFILE&&PROFILE.role==='ADMIN'&&DASH_DATA.users)safe('Admin',()=>renderAdminPanel(DASH_DATA.users||[],DASH_DATA.periode||[],DASH_DATA.audit||[]));
   safe('Charts',()=>renderChartsForPanel('overview'));
 }
-async function loadDashboardData(include){
+async function loadDashboardData(include, opts){
   if(DASH_LOADING)return;
   DASH_LOADING=true;
+  const silent = !!(opts && opts.silent);
   const btn=$('refreshBtn');const oldText=btn?btn.innerHTML:'';
-  if(btn){btn.innerHTML='<span class="spinner" style="border-width:2px"></span>';btn.disabled=true}
+  if(btn&&!silent){btn.innerHTML='<span class="spinner" style="border-width:2px"></span>';btn.disabled=true}
   try{
     const filters=Object.assign({},dashFilters,{scope:accScope});
     const r=await apiPost({action:'dashboard',filters,page:respPage,perPage:RESP_PER_PAGE,include:include||'all'});
     if(!DASH_DATA)DASH_DATA={};
     Object.keys(r).forEach(k=>{if(k==='master'||k==='reminder'){if(r[k])DASH_DATA[k]=r[k]}else{DASH_DATA[k]=r[k]}});
+    if(r.stamp) LAST_KNOWN_STAMP=r.stamp;
     renderAllPanels();
+    if(silent){
+      // Update waktu sync
+      const badge=$('profileBadge');
+      // no-op, badge already handled above
+    }
   }catch(e){
-    toast('Gagal memuat: '+e.message,'err');
+    if(!silent) toast('Gagal memuat: '+e.message,'err');
     if(/sesi tidak valid|berakhir/i.test(e.message))doLogout();
   }
-  finally{if(btn){btn.innerHTML=oldText;btn.disabled=false}DASH_LOADING=false}
+  finally{if(btn&&!silent){btn.innerHTML=oldText;btn.disabled=false}DASH_LOADING=false}
 }
 async function loadReminderSettings(){
   try{
@@ -1461,6 +1434,8 @@ async function doMasterUpload(){
     msg('uploadStatus',`✅ ${r.message||'Berhasil'}`,true);
     toast('Upload Master Alumni berhasil.','ok');
     _uploadFile=null;$('fileUpload').value='';$('doUploadBtn').disabled=true;masterPage=1;
+    // Force refresh (auto polling juga akan trigger)
+    await loadDashboardData('all',{silent:true});
     await reloadMaster();await loadMasterStats();
   }catch(e){msg('uploadStatus',e.message,false);toast(e.message,'err')}
   finally{btn.innerHTML=old;btn.disabled=false}
@@ -1543,10 +1518,7 @@ function bindEvents(){
     namaEl.addEventListener('blur', onNamaBlur);
   }
   const nimEl=$('nim');
-  if(nimEl){
-    nimEl.addEventListener('input',detectFromNim);
-    nimEl.addEventListener('change',detectFromNim);
-  }
+  if(nimEl){nimEl.addEventListener('input',detectFromNim);nimEl.addEventListener('change',detectFromNim);}
 
   $('loginBtn').onclick=login;
   $('logoutBtn').onclick=doLogout;
@@ -1608,14 +1580,24 @@ function bindEvents(){
   });
 
   setupMasterUpload();
+
+  // Sinkronisasi saat tab kembali aktif
+  document.addEventListener('visibilitychange',()=>{
+    if(!document.hidden && TOKEN && PROFILE && !DASH_LOADING){
+      loadDashboardData('all',{silent:true});
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded',async()=>{
   bindEvents();
-  checkConnection();
+  await checkConnection();
+  startConnHealth();
   await loadMeta();
   syncBagianB();
   if(TOKEN&&TOKEN_EXP>Date.now()&&PROFILE)showDashboard();
+  // Warm-up backend (opsional, percepat request pertama)
+  try{apiGet({action:'health'}).catch(()=>{})}catch(_){}
 });
 </script>
 </body>
