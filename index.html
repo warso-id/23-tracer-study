@@ -172,11 +172,6 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 .admin-tile .at-icon{font-size:32px;margin-bottom:8px}
 .admin-tile b{display:block;font-size:14px;color:var(--accent2);margin-bottom:4px}
 .admin-tile span{font-size:12px;color:var(--muted)}
-.receipt-box{background:linear-gradient(135deg,#eaf7ef,#d1fae5);border:2px solid #6ee7b7;border-radius:14px;padding:20px;margin-top:16px}
-.receipt-box h4{margin:0 0 10px;color:var(--s1-dark);font-size:16px}
-.receipt-box p{margin:6px 0;font-size:13.5px;color:var(--s1-dark);line-height:1.6}
-.receipt-box .receipt-id{background:#fff;padding:12px 14px;border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:18px;font-weight:800;color:var(--accent2);letter-spacing:1.5px;text-align:center;margin:12px 0;border:1px solid #6ee7b7}
-.receipt-box .receipt-email-status{background:#fff;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;border-left:3px solid var(--s1)}
 
 /* === AUTOCOMPLETE === */
 .autocomplete-wrap{position:relative}
@@ -193,6 +188,16 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 .suggestion-empty{padding:16px 14px;text-align:center;color:#66736d;font-size:13px;line-height:1.55}
 .suggestion-empty b{color:#b54708}
 .suggestion-hint{padding:8px 14px;font-size:11.5px;color:#66736d;background:#f8faf9;border-top:1px solid #eef2f0;text-align:center;font-weight:600;letter-spacing:.3px}
+
+/* Summary detail cards */
+.summary-detail{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:20px}
+.summary-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.summary-card h4{margin:0 0 12px;font-size:13px;color:var(--accent2);text-transform:uppercase;letter-spacing:.5px;border-bottom:2px solid #e9f4f0;padding-bottom:8px}
+.summary-card .row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;border-bottom:1px dashed #eef2f0}
+.summary-card .row:last-child{border-bottom:0}
+.summary-card .row b{color:var(--accent2);font-weight:800}
+.summary-card .row span{color:#4b5852;flex:1;word-break:break-word;padding-right:8px}
+.summary-card .row .val{font-weight:800;color:var(--accent2);white-space:nowrap}
 
 @media(max-width:900px){.login-shell{grid-template-columns:1fr}.acc-grid{grid-template-columns:1fr}.acc-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
@@ -257,7 +262,6 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
     <p class="hint">Formulir disesuaikan untuk jenjang S1 &amp; S2 FIKOM UPDM (B).</p>
     <div id="periodeInfo" class="status info" style="display:none"></div>
     <div id="formStatus" class="status"></div>
-    <div id="receiptBox" class="hidden"></div>
 
     <div class="step-indicator" id="stepIndicator">
       <button type="button" data-goto="1"><span class="si-num">A</span>Data Pribadi</button>
@@ -293,7 +297,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
             <label for="nim">NIM <span class="req">*</span></label>
             <input id="nim" inputmode="numeric" maxlength="9" pattern="\d{9}" placeholder="Masukkan NIM 9 digit" autocomplete="off">
             <span class="field-error" id="err-nim"></span>
-            <p class="hint" style="margin-top:6px">Format NIM: S1 = <b>yyyy41nnn</b> · S2 = <b>yyyy03nnn</b>.</p>
+            <p class="hint" style="margin-top:6px">Format NIM: S1 = <b>yyyy41nnn</b> · S2 = <b>yyyy03nnn</b>. Program studi &amp; jenjang otomatis dari NIM.</p>
           </div>
 
           <div class="full hidden" id="prodiBox">
@@ -516,6 +520,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
       <div class="panel" data-panel="overview">
         <div class="kpi" id="kpiBox"></div>
         <div id="summaryInsight" style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;overflow-x:auto"></div>
+        <div id="summaryDetail" class="summary-detail"></div>
         <div class="grid" style="margin-top:24px">
           <div class="chartbox"><h4>📊 Sudah Bekerja Sebelum Lulus</h4><div class="chartwrap"><canvas id="chB1"></canvas></div></div>
           <div class="chartbox"><h4>🏢 Jenis Institusi Sebelum Lulus</h4><div class="chartwrap"><canvas id="chB2"></canvas></div></div>
@@ -651,13 +656,13 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
 </main>
 
-<footer>Tracer Study FIKOM UPDM (B) · v18.0.0-autocomplete · Secured &amp; Optimized</footer>
+<footer>Tracer Study FIKOM UPDM (B) · v18.1.0-fix · Secured &amp; Optimized</footer>
 <div id="modalRoot"></div>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 'use strict';
-const APP_VERSION_STR='v18.0.0-autocomplete';
+const APP_VERSION_STR='v18.1.0-fix';
 const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbxK7iksNxJO4C6-JDQyqAqdUib4uvyWvMZamJG5MBI_l-AWnVoywTMvFnGuD7jX8-Viog/exec';
 const GAS_URL=(localStorage.getItem('ts_gas_url')||DEFAULT_GAS_URL).trim().replace(/\/$/,'');
 const TOTAL_STEPS=2, RESP_PER_PAGE=50, MASTER_PER_PAGE=50;
@@ -728,31 +733,6 @@ function updateStudentBanner(jenjang, nama, nim){
     if(desc) desc.textContent=(nama?'Halo, '+nama+'. ':'')+'Program Studi: S2 Magister Ilmu Komunikasi'+(nim?' · NIM '+nim:'');
     if(status) status.textContent='S2';
   }
-}
-function showReceiptBox(tracerId, email, emailStatus){
-  const box=$('receiptBox'); if(!box) return;
-  const emailInfo = emailStatus === 'sent'
-    ? `<div class="receipt-email-status"><p style="margin:0 0 4px">📧 <b>Ringkasan telah dikirim ke email:</b></p><p style="margin:0"><code>${esc(email||'-')}</code></p></div>`
-    : emailStatus === 'failed'
-    ? `<div class="receipt-email-status" style="border-left-color:var(--warn);background:#fff8e8;color:var(--warn)"><p style="margin:0">⚠️ Email ringkasan gagal terkirim. Simpan Tracer ID di bawah.</p></div>`
-    : '';
-  box.className='receipt-box';
-  box.innerHTML = `
-    <h4>🎉 Terima kasih! Data Anda berhasil tersimpan.</h4>
-    <p>Simpan <b>Tracer ID</b> berikut untuk verifikasi:</p>
-    <div class="receipt-id">${esc(tracerId)}</div>
-    ${emailInfo}
-    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px">
-      <button type="button" class="btn secondary sm" id="copyTracerIdBtn">📋 Salin Tracer ID</button>
-    </div>`;
-  const copyBtn=$('copyTracerIdBtn');
-  if(copyBtn){copyBtn.onclick=async()=>{
-    try{
-      if(navigator.clipboard && window.isSecureContext){await navigator.clipboard.writeText(tracerId);}
-      else{const ta=document.createElement('textarea');ta.value=tracerId;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
-      toast('Tracer ID disalin','ok');
-    }catch(_){toast('Gagal menyalin','err')}
-  }}
 }
 
 function b64EncodeUnicode(str){return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)))}
@@ -827,7 +807,7 @@ function acRender(){
   acOpen();
   box.querySelectorAll('.suggestion-item').forEach(el=>{
     el.addEventListener('mousedown', ev=>{
-      ev.preventDefault(); // jangan blur input
+      ev.preventDefault();
       acPick(Number(el.dataset.idx));
     });
   });
@@ -840,7 +820,7 @@ async function acFetch(q){
   acSetLoading(true);
   try{
     const r = await apiPost({action:'findbyname', nama:q, limit:15});
-    if(AC_LAST_QUERY !== q) return; // stale
+    if(AC_LAST_QUERY !== q) return;
     AC_LIST = (r && r.matches) || [];
     AC_INDEX = AC_LIST.length ? 0 : -1;
     acRender();
@@ -859,19 +839,17 @@ function acPick(idx){
   $('nama').value = m.nama || '';
   AC_LAST_QUERY = String(m.nama||'').toLowerCase();
 
-  // Reveal NIM/Prodi
   $('nimBox').classList.remove('hidden');
   $('prodiBox').classList.remove('hidden');
 
   $('nim').value = m.nim || '';
-  $('programStudi').value = m.programStudi || '';
-  $('jenjang').value = m.jenjang || '';
-  if(m.tahunMasuk) $('tahunMasuk').value = m.tahunMasuk;
-  if(m.tahunLulus) $('tahunLulus').value = m.tahunLulus;
+  // NIM adalah source of truth — derive jenjang & prodi dari NIM
+  detectFromNim();
+  if(m.tahunMasuk && !val('tahunMasuk')) $('tahunMasuk').value = m.tahunMasuk;
+  if(m.tahunLulus && !val('tahunLulus')) $('tahunLulus').value = m.tahunLulus;
   if(m.email && !val('email')) $('email').value = m.email;
   if(m.whatsapp && !val('whatsapp')) $('whatsapp').value = m.whatsapp;
 
-  applyJenjang(m.jenjang || '');
   setFieldError('nama','');
   acClose();
   toast('✓ Data ditemukan: ' + m.nama + ' (' + m.nim + ')', 'ok');
@@ -885,9 +863,8 @@ function acScrollActive(){
 
 function onNamaInput(){
   const n = val('nama');
-  AC_PICKED = null; // user mengubah teks — reset pilihan
+  AC_PICKED = null;
 
-  // Kelola NIM box
   if(n.length >= AC_MIN_CHARS){
     $('nimBox').classList.remove('hidden');
     $('prodiBox').classList.remove('hidden');
@@ -928,7 +905,6 @@ function onNamaKeydown(e){
 }
 
 function onNamaBlur(){
-  // delay supaya klik pada saran sempat dieksekusi
   setTimeout(()=>acClose(), 180);
 }
 
@@ -940,13 +916,12 @@ function onNamaFocus(){
   }
 }
 
-/* Klik di luar autocomplete → tutup */
 document.addEventListener('click', e=>{
   const wrap=$('acWrap');
   if(wrap && !wrap.contains(e.target)) acClose();
 });
 
-/* NIM manual → auto detect prodi & jenjang */
+/* NIM manual → auto detect prodi & jenjang (SOURCE OF TRUTH) */
 function detectFromNim(){
   const nim=val('nim');
   if(!/^\d{9}$/.test(nim)){
@@ -1097,19 +1072,11 @@ async function submitTracer(){
       const r=await apiPost({action:'submit',formData:payload,publicNonce:PUBLIC_NONCE});
       success=true;
       const tracerId=r.tracerId;
-      const emailAddr=val('email')||(payload.email||'');
       msg('formStatus',`✅ Berhasil! Tracer ID Anda: <b>${esc(tracerId)}</b>`,true);
       toast('Data Tracer Study berhasil disimpan!','ok');
       sessionStorage.setItem('last_tracer_id',tracerId);
-      let emailStatus='skipped';
-      try{
-        const frontendUrl=window.location.origin+window.location.pathname;
-        const er=await apiPost({action:'sendreceipt',tracerId,frontendUrl});
-        emailStatus=er&&er.ok?'sent':'failed';
-        if(emailStatus==='sent')toast('📧 Ringkasan telah dikirim ke email Anda','ok');
-      }catch(mailErr){emailStatus='failed';console.warn('[SendReceipt]',mailErr)}
-      showReceiptBox(tracerId,emailAddr,emailStatus);
       window.scrollTo({top:0,behavior:'smooth'});
+      if(btn){btn.disabled=true;btn.innerHTML='✓ Terkirim'}
     }catch(e){
       errMsg=e.message;const low=errMsg.toLowerCase();
       if(/lock|concurrent|sibuk|timeout/.test(low)){retry++;if(retry<3){toast(`Server padat. Retry (${retry}/3)...`,'warn');await new Promise(r=>setTimeout(r,2000*retry))}}
@@ -1216,15 +1183,79 @@ function renderKpi(s){
   if(total===0&&totalMaster===0){box.innerHTML='<div class="empty-state"><b>Belum ada Master Alumni.</b><br>Silakan upload Master Alumni.</div>';}
   else{box.innerHTML=`
     <div><b>${s.responseRate||0}%</b><span>Response Rate</span></div>
-    <div><b>${total?Math.round((s.bekerjaSetelah/total)*100):0}%</b><span>Bekerja Setelah Lulus</span></div>
-    <div><b>${total?Math.round((s.wirausahaSetelah/total)*100):0}%</b><span>Wirausaha</span></div>
-    <div><b>${total?Math.round((s.melanjutkan/total)*100):0}%</b><span>Melanjutkan Studi</span></div>`}
+    <div><b>${total}</b><span>Total Responden</span></div>
+    <div><b>${belum}</b><span>Belum Mengisi</span></div>
+    <div><b>${totalMaster}</b><span>Total Master</span></div>
+    <div><b>${s.bekerjaSebelum||0}</b><span>Bekerja Sblm Lulus</span></div>
+    <div><b>${s.wirausahaSebelum||0}</b><span>Wirausaha Sblm Lulus</span></div>
+    <div><b>${s.bekerjaSetelah||0}</b><span>Bekerja Stlh Lulus</span></div>
+    <div><b>${s.wirausahaSetelah||0}</b><span>Wirausaha Stlh Lulus</span></div>
+    <div><b>${s.melanjutkan||0}</b><span>Melanjutkan Studi</span></div>
+    <div><b>${s.s1||0}</b><span>Responden S1</span></div>
+    <div><b>${s.s2||0}</b><span>Responden S2</span></div>`}
   const ins=$('summaryInsight');
   if(ins)ins.innerHTML=`
     <div class="card" style="padding:12px 16px"><b>${total}</b> dari <b>${totalMaster}</b> alumni terisi (${belum} belum)</div>
-    <div class="card" style="padding:12px 16px">Bekerja sebelum lulus: <b>${s.bekerjaSebelum||0}</b></div>
-    <div class="card" style="padding:12px 16px">Wirausaha sebelum lulus: <b>${s.wirausahaSebelum||0}</b></div>`;
+    <div class="card" style="padding:12px 16px">B1 Ya: <b>${s.b1Ya||0}</b> · Tidak: <b>${s.b1Tidak||0}</b></div>
+    <div class="card" style="padding:12px 16px">B3 Ya: <b>${s.b3Ya||0}</b> · Tidak: <b>${s.b3Tidak||0}</b></div>`;
+  renderSummaryDetail(s);
 }
+function renderSummaryDetail(s){
+  const box=$('summaryDetail'); if(!box)return;
+  if(!s){box.innerHTML='';return}
+  const rowsFrom=(obj)=>{
+    const keys=Object.keys(obj||{});
+    if(!keys.length) return '<div class="row"><span>(belum ada data)</span><b class="val">0</b></div>';
+    return keys.map(k=>`<div class="row"><span>${esc(k)}</span><b class="val">${obj[k]}</b></div>`).join('');
+  };
+  box.innerHTML=`
+    <div class="summary-card">
+      <h4>B1 — Bekerja Sebelum Lulus</h4>
+      <div class="row"><span>Ya</span><b class="val">${s.b1Ya||0}</b></div>
+      <div class="row"><span>Tidak</span><b class="val">${s.b1Tidak||0}</b></div>
+    </div>
+    <div class="summary-card">
+      <h4>B2 — Jenis Institusi (Sebelum Lulus)</h4>
+      ${rowsFrom(s.b2Detail)}
+    </div>
+    <div class="summary-card">
+      <h4>B3 — Wirausaha Sebelum Lulus</h4>
+      <div class="row"><span>Ya</span><b class="val">${s.b3Ya||0}</b></div>
+      <div class="row"><span>Tidak</span><b class="val">${s.b3Tidak||0}</b></div>
+    </div>
+    <div class="summary-card">
+      <h4>B4 — Posisi Wirausaha (Sebelum Lulus)</h4>
+      ${rowsFrom(s.b4Detail)}
+    </div>
+    <div class="summary-card">
+      <h4>B5 — Aktivitas Setelah Lulus</h4>
+      <div class="row"><span>Bekerja</span><b class="val">${s.bekerjaSetelah||0}</b></div>
+      <div class="row"><span>Wirausaha</span><b class="val">${s.wirausahaSetelah||0}</b></div>
+      <div class="row"><span>Melanjutkan pendidikan</span><b class="val">${s.melanjutkan||0}</b></div>
+    </div>
+    <div class="summary-card">
+      <h4>B6 — Jenis Institusi (Setelah Lulus)</h4>
+      ${rowsFrom(s.b6Detail)}
+    </div>
+    <div class="summary-card">
+      <h4>B7 — Masa Tunggu Kerja</h4>
+      ${rowsFrom(s.b7Detail)}
+    </div>
+    <div class="summary-card">
+      <h4>B8 — Pendapatan Per Bulan</h4>
+      ${rowsFrom(s.b8Detail)}
+    </div>
+    <div class="summary-card">
+      <h4>B9 — Posisi Wirausaha (Setelah Lulus)</h4>
+      ${rowsFrom(s.b9Detail)}
+    </div>
+    <div class="summary-card">
+      <h4>Jenjang Responden</h4>
+      <div class="row"><span>S1 Ilmu Komunikasi</span><b class="val">${s.s1||0}</b></div>
+      <div class="row"><span>S2 Magister Ilmu Komunikasi</span><b class="val">${s.s2||0}</b></div>
+    </div>`;
+}
+
 function renderRecentTable(rows){
   const t=$('recentTable');if(!t)return;
   if(!rows||!rows.length){t.innerHTML='<tr><td>Belum ada data.</td></tr>';return}
@@ -1234,8 +1265,13 @@ function renderRecentTable(rows){
 function renderRespTable(rows,pagination){
   const t=$('respTable');if(!t)return;
   t.innerHTML=(!rows||!rows.length)?'<tr><td>Tidak ada data.</td></tr>':
-    `<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Tahun Lulus</th><th>Setelah Lulus</th></tr>`+
-    rows.map(r=>`<tr><td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td>${esc(r.programStudi)}</td><td>${esc(r.tahunLulus)}</td><td>${esc(r.setelahLulus)}</td></tr>`).join('');
+    `<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Jenjang</th><th>Tahun Lulus</th><th>JK</th><th>Email</th><th>WA</th><th>B1</th><th>B3</th><th>B5</th></tr>`+
+    rows.map(r=>`<tr>
+      <td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td>
+      <td>${esc(r.programStudi)}</td><td>${esc(r.jenjang)}</td><td>${esc(r.tahunLulus)}</td>
+      <td>${esc(r.jenisKelamin)}</td><td>${esc(r.email)}</td><td>${esc(r.whatsapp)}</td>
+      <td>${esc(r.b1)}</td><td>${esc(r.b3)}</td><td>${esc(r.setelahLulus)}</td>
+    </tr>`).join('');
   $('respInfo')&&($('respInfo').textContent=pagination?`Total ${pagination.total} data · Hal ${pagination.page}/${pagination.totalPages}`:'');
   const pg=$('respPagination');
   if(pg&&pagination){
@@ -1499,7 +1535,6 @@ function bindEvents(){
   $$('#stepIndicator button').forEach(b=>b.onclick=()=>{const t=Number(b.dataset.goto);if(t<=step||validateStep(step)){step=t;updateSteps()}});
   $('tracerForm').onsubmit=(e)=>{e.preventDefault();submitTracer()};
 
-  // Autocomplete nama
   const namaEl=$('nama');
   if(namaEl){
     namaEl.addEventListener('input', onNamaInput);
@@ -1507,7 +1542,6 @@ function bindEvents(){
     namaEl.addEventListener('focus', onNamaFocus);
     namaEl.addEventListener('blur', onNamaBlur);
   }
-  // NIM manual → auto-detect
   const nimEl=$('nim');
   if(nimEl){
     nimEl.addEventListener('input',detectFromNim);
