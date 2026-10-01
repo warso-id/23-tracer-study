@@ -13,7 +13,7 @@
 <link rel="icon" href="https://i.imgur.com/JkxRYd6.png">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <style>
-:root{--bg:#f4f7f6;--card:#fff;--text:#17211d;--muted:#66736d;--line:#dce5e1;--accent:#116149;--accent2:#0c4d3a;--danger:#b42318;--ok:#087443;--warn:#b54708;--info:#1d4ed8;--s1:#059669;--s1-bg:#ecfdf5;--s1-bg2:#d1fae5;--s1-border:#6ee7b7;--s1-dark:#065f46;--s2:#4f46e5;--s2-bg:#eef2ff;--s2-bg2:#e0e7ff;--s2-border:#a5b4fc;--s2-dark:#3730a3;--admin:#d97706;--admin-bg:#fffbeb;--admin-border:#fcd34d;--admin-dark:#92400e;--mhs:#7c3aed;--mhs-bg:#f5f3ff;--mhs-border:#c4b5fd;--mhs-dark:#5b21b6;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
+:root{--bg:#f4f7f6;--card:#fff;--text:#17211d;--muted:#66736d;--line:#dce5e1;--accent:#116149;--accent2:#0c4d3a;--danger:#b42318;--ok:#087443;--warn:#b54708;--info:#1d4ed8;--s1:#059669;--s1-bg:#ecfdf5;--s1-bg2:#d1fae5;--s1-border:#6ee7b7;--s1-dark:#065f46;--s2:#4f46e5;--s2-bg:#eef2ff;--s2-bg2:#e0e7ff;--s2-border:#a5b4fc;--s2-dark:#3730a3;--admin:#d97706;--admin-bg:#fffbeb;--admin-border:#fcd34d;--mhs:#7c3aed;--mhs-bg:#f5f3ff;--mhs-border:#c4b5fd;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;overscroll-behavior-y:none;padding-left:var(--safe-left);padding-right:var(--safe-right)}
@@ -77,11 +77,15 @@ textarea{min-height:80px;resize:vertical;font-family:inherit}
 .step{display:none}
 .step.active{display:block;animation:slideUp .4s forwards}
 .stepnav{display:flex;justify-content:space-between;margin-top:24px;gap:10px;padding-top:16px;border-top:1px solid var(--line)}
-.opt-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:6px}
-.opt{border:1px solid var(--line);padding:12px 14px;border-radius:10px;font-weight:600;text-align:left;cursor:pointer;font-size:14px;transition:all .2s;background:#fff;display:flex;align-items:center;gap:10px}
+.opt-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;margin-top:6px}
+.opt{border:1px solid var(--line);padding:12px 14px;border-radius:10px;font-weight:600;text-align:left;cursor:pointer;font-size:14px;transition:all .2s;background:#fff;display:flex;align-items:flex-start;gap:10px}
 .opt:hover{background:#f1f7f4;border-color:var(--accent)}
 .opt:has(input:checked){background:#e9f4f0;border-color:var(--accent);color:var(--accent);font-weight:800}
-.opt input{width:18px;height:18px;accent-color:var(--accent);-webkit-appearance:auto;appearance:auto;margin:0}
+.opt input{width:18px;height:18px;accent-color:var(--accent);-webkit-appearance:auto;appearance:auto;margin:2px 0 0}
+.opt .opt-body{flex:1;min-width:0}
+.opt .opt-title{display:block;font-weight:800;color:var(--accent2);font-size:14px}
+.opt .opt-sub{display:block;font-size:12.5px;color:var(--muted);margin-top:2px;font-weight:600}
+.opt:has(input:checked) .opt-sub{color:var(--accent)}
 .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
 .table{width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px}
 .table th,.table td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
@@ -139,6 +143,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 .step-indicator button.done{background:var(--s1-bg2);color:var(--s1-dark);border-color:var(--s1-border)}
 .step-indicator .si-num{display:block;font-size:16px;margin-bottom:4px;font-weight:900}
 .spinner{display:inline-block;width:1.2em;height:1.2em;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+.spinner.dark{border-color:rgba(17,97,73,.25);border-top-color:var(--accent)}
 .cascade-info{background:#eef4ff;border-left:3px solid var(--info);padding:10px 14px;border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--info)}
 .dropzone{border:2px dashed #cbd7d2;border-radius:12px;padding:24px;text-align:center;background:#fff;cursor:pointer}
 .dropzone:hover{border-color:var(--accent);background:#eef7f3}
@@ -172,6 +177,23 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 .receipt-box p{margin:6px 0;font-size:13.5px;color:var(--s1-dark);line-height:1.6}
 .receipt-box .receipt-id{background:#fff;padding:12px 14px;border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:18px;font-weight:800;color:var(--accent2);letter-spacing:1.5px;text-align:center;margin:12px 0;border:1px solid #6ee7b7}
 .receipt-box .receipt-email-status{background:#fff;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;border-left:3px solid var(--s1)}
+
+/* === AUTOCOMPLETE === */
+.autocomplete-wrap{position:relative}
+.autocomplete-wrap input{padding-right:38px}
+.autocomplete-wrap .ac-indicator{position:absolute;top:50%;right:12px;transform:translateY(-50%);font-size:16px;opacity:.55;pointer-events:none;transition:opacity .2s}
+.autocomplete-wrap.loading .ac-indicator{opacity:1}
+.suggestions{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #cbd7d2;border-radius:11px;box-shadow:0 12px 32px rgba(23,53,42,.15);max-height:360px;overflow-y:auto;z-index:60;animation:slideUp .15s}
+.suggestion-item{padding:11px 14px;cursor:pointer;border-bottom:1px solid #eef2f0;transition:background .15s}
+.suggestion-item:last-child{border-bottom:0}
+.suggestion-item:hover,.suggestion-item.active{background:#e9f4f0}
+.suggestion-name{font-weight:800;color:#0c4d3a;font-size:14px;word-break:break-word}
+.suggestion-meta{font-size:12.5px;color:#66736d;margin-top:2px;word-break:break-word}
+.suggestion-meta b{color:#116149;font-weight:800}
+.suggestion-empty{padding:16px 14px;text-align:center;color:#66736d;font-size:13px;line-height:1.55}
+.suggestion-empty b{color:#b54708}
+.suggestion-hint{padding:8px 14px;font-size:11.5px;color:#66736d;background:#f8faf9;border-top:1px solid #eef2f0;text-align:center;font-weight:600;letter-spacing:.3px}
+
 @media(max-width:900px){.login-shell{grid-template-columns:1fr}.acc-grid{grid-template-columns:1fr}.acc-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
   .grid{grid-template-columns:1fr}
@@ -250,13 +272,21 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
         <h3>Bagian A — Data Pribadi</h3>
 
         <div class="form-section-title">👤 Identitas</div>
-        <div class="cascade-info"><b>Petunjuk:</b> Ketik <b>Nama Lengkap sesuai KTP</b> terlebih dahulu. Field <b>NIM</b> akan muncul otomatis setelah nama terisi.</div>
+        <div class="cascade-info">
+          <b>Petunjuk:</b> Mulai ketik <b>Nama Lengkap sesuai KTP</b> → sistem akan menampilkan saran dari data alumni.
+          Klik saran untuk auto-isi, atau lanjutkan ketik &amp; isi <b>NIM secara manual</b> di bawahnya.
+        </div>
 
         <div class="grid">
           <div class="full">
             <label for="nama">Nama Lengkap (sesuai KTP) <span class="req">*</span></label>
-            <input id="nama" required maxlength="120" placeholder="Ketik nama lengkap Anda sesuai KTP" autocomplete="off">
+            <div class="autocomplete-wrap" id="acWrap">
+              <input id="nama" required maxlength="120" placeholder="Ketik nama lengkap Anda…" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="namaSuggestions">
+              <span class="ac-indicator" id="acIndicator" aria-hidden="true">🔍</span>
+              <div id="namaSuggestions" class="suggestions hidden" role="listbox"></div>
+            </div>
             <span class="field-error" id="err-nama"></span>
+            <p class="hint" style="margin-top:6px">Muncul saran setelah 2 karakter. Anda tetap bisa isi manual bila nama tidak ada di master.</p>
           </div>
 
           <div class="full hidden" id="nimBox">
@@ -329,8 +359,8 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full">
             <label>B1. Apakah Anda sudah bekerja sebelum lulus dari FIKOM UPDM (B)? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b1_bekerjaSebelumLulus" value="Ya"> Ya</label>
-              <label class="opt"><input type="radio" name="b1_bekerjaSebelumLulus" value="Tidak"> Tidak</label>
+              <label class="opt"><input type="radio" name="b1_bekerjaSebelumLulus" value="Ya"> <span class="opt-body"><span class="opt-title">Ya</span></span></label>
+              <label class="opt"><input type="radio" name="b1_bekerjaSebelumLulus" value="Tidak"> <span class="opt-body"><span class="opt-title">Tidak</span></span></label>
             </div>
             <span class="field-error" id="err-b1_bekerjaSebelumLulus"></span>
           </div>
@@ -338,10 +368,10 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full hidden" id="b2Box">
             <label>B2. Jika sudah bekerja, di mana Anda bekerja? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Institusi Pemerintah, BUMN, BUMD"> Institusi Pemerintah, BUMN, BUMD</label>
-              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Institusi/Organisasi Multilateral"> Institusi/Organisasi Multilateral</label>
-              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Lembaga/Organisasi Nirlaba"> Lembaga/Organisasi Nirlaba</label>
-              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Perusahaan Swasta"> Perusahaan Swasta</label>
+              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Institusi Pemerintah, BUMN, BUMD"> <span class="opt-body"><span class="opt-title">Institusi Pemerintah, BUMN, BUMD</span></span></label>
+              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Institusi/Organisasi Multilateral"> <span class="opt-body"><span class="opt-title">Institusi/Organisasi Multilateral</span></span></label>
+              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Lembaga/Organisasi Nirlaba"> <span class="opt-body"><span class="opt-title">Lembaga/Organisasi Nirlaba</span></span></label>
+              <label class="opt"><input type="radio" name="b2_jenisInstitusiSebelumLulus" value="Perusahaan Swasta"> <span class="opt-body"><span class="opt-title">Perusahaan Swasta</span></span></label>
             </div>
             <span class="field-error" id="err-b2_jenisInstitusiSebelumLulus"></span>
           </div>
@@ -349,8 +379,8 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full">
             <label>B3. Apakah Anda berwirausaha sebelum lulus dari FIKOM UPDM (B)? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b3_wirausahaSebelumLulus" value="Ya"> Ya</label>
-              <label class="opt"><input type="radio" name="b3_wirausahaSebelumLulus" value="Tidak"> Tidak</label>
+              <label class="opt"><input type="radio" name="b3_wirausahaSebelumLulus" value="Ya"> <span class="opt-body"><span class="opt-title">Ya</span></span></label>
+              <label class="opt"><input type="radio" name="b3_wirausahaSebelumLulus" value="Tidak"> <span class="opt-body"><span class="opt-title">Tidak</span></span></label>
             </div>
             <span class="field-error" id="err-b3_wirausahaSebelumLulus"></span>
           </div>
@@ -358,8 +388,8 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full hidden" id="b4Box">
             <label>B4. Jika ya, sebagai apa Anda dalam berwirausaha? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b4_posisiWirausahaSebelum" value="Founder/Co-Founder"> Founder/Co-Founder</label>
-              <label class="opt"><input type="radio" name="b4_posisiWirausahaSebelum" value="Freelancer"> Freelancer</label>
+              <label class="opt"><input type="radio" name="b4_posisiWirausahaSebelum" value="Founder/Co-Founder"> <span class="opt-body"><span class="opt-title">Founder/Co-Founder</span></span></label>
+              <label class="opt"><input type="radio" name="b4_posisiWirausahaSebelum" value="Freelancer"> <span class="opt-body"><span class="opt-title">Freelancer</span></span></label>
             </div>
             <span class="field-error" id="err-b4_posisiWirausahaSebelum"></span>
           </div>
@@ -367,9 +397,9 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full">
             <label>B5. Setelah lulus dari FIKOM UPDM (B), apa yang Anda lakukan? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b5_setelahLulus" value="Bekerja"> Bekerja</label>
-              <label class="opt"><input type="radio" name="b5_setelahLulus" value="Wirausaha"> Wirausaha</label>
-              <label class="opt"><input type="radio" name="b5_setelahLulus" value="Melanjutkan pendidikan"> Melanjutkan pendidikan</label>
+              <label class="opt"><input type="radio" name="b5_setelahLulus" value="Bekerja"> <span class="opt-body"><span class="opt-title">Bekerja</span></span></label>
+              <label class="opt"><input type="radio" name="b5_setelahLulus" value="Wirausaha"> <span class="opt-body"><span class="opt-title">Wirausaha</span></span></label>
+              <label class="opt"><input type="radio" name="b5_setelahLulus" value="Melanjutkan pendidikan"> <span class="opt-body"><span class="opt-title">Melanjutkan pendidikan</span></span></label>
             </div>
             <span class="field-error" id="err-b5_setelahLulus"></span>
           </div>
@@ -377,10 +407,10 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full hidden" id="b6Box">
             <label>B6. Jika bekerja, di mana Anda bekerja? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Institusi Pemerintah, BUMN, BUMD"> Institusi Pemerintah, BUMN, BUMD</label>
-              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Institusi/Organisasi Multilateral"> Institusi/Organisasi Multilateral</label>
-              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Lembaga/Organisasi Nirlaba"> Lembaga/Organisasi Nirlaba</label>
-              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Perusahaan Swasta"> Perusahaan Swasta</label>
+              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Institusi Pemerintah, BUMN, BUMD"> <span class="opt-body"><span class="opt-title">Institusi Pemerintah, BUMN, BUMD</span></span></label>
+              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Institusi/Organisasi Multilateral"> <span class="opt-body"><span class="opt-title">Institusi/Organisasi Multilateral</span></span></label>
+              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Lembaga/Organisasi Nirlaba"> <span class="opt-body"><span class="opt-title">Lembaga/Organisasi Nirlaba</span></span></label>
+              <label class="opt"><input type="radio" name="b6_jenisInstitusiSetelahLulus" value="Perusahaan Swasta"> <span class="opt-body"><span class="opt-title">Perusahaan Swasta</span></span></label>
             </div>
             <span class="field-error" id="err-b6_jenisInstitusiSetelahLulus"></span>
           </div>
@@ -388,10 +418,10 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full hidden" id="b7Box">
             <label>B7. Berapa lama masa tunggu Anda mendapatkan pekerjaan? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b7_masaTunggu" value="< 3 bulan"> &lt; 3 bulan</label>
-              <label class="opt"><input type="radio" name="b7_masaTunggu" value="4-6 bulan"> 4–6 bulan</label>
-              <label class="opt"><input type="radio" name="b7_masaTunggu" value="7-12 bulan"> 7–12 bulan</label>
-              <label class="opt"><input type="radio" name="b7_masaTunggu" value="> 12 bulan"> &gt; 12 bulan</label>
+              <label class="opt"><input type="radio" name="b7_masaTunggu" value="< 3 bulan"> <span class="opt-body"><span class="opt-title">&lt; 3 bulan</span></span></label>
+              <label class="opt"><input type="radio" name="b7_masaTunggu" value="4-6 bulan"> <span class="opt-body"><span class="opt-title">4–6 bulan</span></span></label>
+              <label class="opt"><input type="radio" name="b7_masaTunggu" value="7-12 bulan"> <span class="opt-body"><span class="opt-title">7–12 bulan</span></span></label>
+              <label class="opt"><input type="radio" name="b7_masaTunggu" value="> 12 bulan"> <span class="opt-body"><span class="opt-title">&gt; 12 bulan</span></span></label>
             </div>
             <span class="field-error" id="err-b7_masaTunggu"></span>
           </div>
@@ -399,9 +429,9 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full hidden" id="b8Box">
             <label>B8. Berapakah pendapatan Anda setiap bulannya? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b8_pendapatan" value="1-5 juta"> 1–5 juta</label>
-              <label class="opt"><input type="radio" name="b8_pendapatan" value="6-10 juta"> 6–10 juta</label>
-              <label class="opt"><input type="radio" name="b8_pendapatan" value="> 10 juta"> &gt; 10 juta</label>
+              <label class="opt"><input type="radio" name="b8_pendapatan" value="1-5 juta"> <span class="opt-body"><span class="opt-title">1–5 juta</span></span></label>
+              <label class="opt"><input type="radio" name="b8_pendapatan" value="6-10 juta"> <span class="opt-body"><span class="opt-title">6–10 juta</span></span></label>
+              <label class="opt"><input type="radio" name="b8_pendapatan" value="> 10 juta"> <span class="opt-body"><span class="opt-title">&gt; 10 juta</span></span></label>
             </div>
             <span class="field-error" id="err-b8_pendapatan"></span>
           </div>
@@ -409,8 +439,8 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full hidden" id="b9Box">
             <label>B9. Jika setelah lulus Anda berwirausaha, posisi Anda sebagai apa? <span class="req">*</span></label>
             <div class="opt-list">
-              <label class="opt"><input type="radio" name="b9_posisiWirausahaSetelah" value="Founder/Co-Founder"> Founder/Co-Founder</label>
-              <label class="opt"><input type="radio" name="b9_posisiWirausahaSetelah" value="Freelancer"> Freelancer</label>
+              <label class="opt"><input type="radio" name="b9_posisiWirausahaSetelah" value="Founder/Co-Founder"> <span class="opt-body"><span class="opt-title">Founder/Co-Founder</span></span></label>
+              <label class="opt"><input type="radio" name="b9_posisiWirausahaSetelah" value="Freelancer"> <span class="opt-body"><span class="opt-title">Freelancer</span></span></label>
             </div>
             <span class="field-error" id="err-b9_posisiWirausahaSetelah"></span>
           </div>
@@ -621,16 +651,18 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
 </main>
 
-<footer>Tracer Study FIKOM UPDM (B) · v16.9.0-lamspak · Secured &amp; Optimized</footer>
+<footer>Tracer Study FIKOM UPDM (B) · v18.0.0-autocomplete · Secured &amp; Optimized</footer>
 <div id="modalRoot"></div>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 'use strict';
-const APP_VERSION_STR='v16.9.0-lamspak';
+const APP_VERSION_STR='v18.0.0-autocomplete';
 const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbxK7iksNxJO4C6-JDQyqAqdUib4uvyWvMZamJG5MBI_l-AWnVoywTMvFnGuD7jX8-Viog/exec';
 const GAS_URL=(localStorage.getItem('ts_gas_url')||DEFAULT_GAS_URL).trim().replace(/\/$/,'');
 const TOTAL_STEPS=2, RESP_PER_PAGE=50, MASTER_PER_PAGE=50;
+const AC_MIN_CHARS=2;
+const AC_DEBOUNCE=350;
 
 const DEFAULT_REMINDER_SETTINGS = {
   formLink: 'https://s.id/tracer-fikom',
@@ -640,7 +672,6 @@ const DEFAULT_REMINDER_SETTINGS = {
 };
 let REMINDER_SETTINGS = Object.assign({}, DEFAULT_REMINDER_SETTINGS);
 
-/* Role hanya ADMIN & MAHASISWA */
 const DASH_MAP = {
   'ADMIN':     {cls:'admin', icon:'🛡️', title:'Pusat Kendali Admin', desc:'Kelola data alumni, periode, dan indikator LAMSPAK.', tags:['Full Access','S1 + S2','LAMSPAK']},
   'MAHASISWA': {cls:'mhs',   icon:'🎓', title:'Dashboard Mahasiswa', desc:'Data pribadi Anda saja.', tags:['Scope: Pribadi']}
@@ -653,6 +684,14 @@ let META=null,step=1,charts={};
 let respPage=1,masterPage=1,formSubmitted=false,PUBLIC_NONCE='';
 let dashFilters={},accScope='all',_uploadFile=null;
 let DASH_DATA=null, ACC_DATA={}, DASH_LOADING=false, CURRENT_REMINDER_ITEMS=[];
+
+// Autocomplete state
+let AC_LIST=[];
+let AC_INDEX=-1;
+let AC_TIMER=null;
+let AC_LAST_QUERY='';
+let AC_FETCHING=false;
+let AC_PICKED=null;
 
 const $=id=>document.getElementById(id);
 const $$=s=>document.querySelectorAll(s);
@@ -761,18 +800,177 @@ function updateTahunFilterFromData(yearCounts){
   if(years.includes(cur))ft.value=cur;
 }
 
+/* ============================================================
+ *  AUTOCOMPLETE NAMA
+ * ============================================================ */
+function acOpen(){ const b=$('namaSuggestions'); if(b)b.classList.remove('hidden'); $('nama')?.setAttribute('aria-expanded','true'); }
+function acClose(){ const b=$('namaSuggestions'); if(b)b.classList.add('hidden'); $('nama')?.setAttribute('aria-expanded','false'); AC_INDEX=-1; }
+function acSetLoading(v){ const w=$('acWrap'); if(w)w.classList.toggle('loading',!!v); AC_FETCHING=!!v; }
+
+function acRender(){
+  const box=$('namaSuggestions'); if(!box) return;
+  if(!AC_LIST.length){
+    box.innerHTML = '<div class="suggestion-empty">Nama <b>tidak ditemukan</b> di master alumni.<br>Anda tetap dapat mengisi <b>NIM secara manual</b> pada kolom di bawah.</div>';
+    acOpen();
+    return;
+  }
+  const total = AC_LIST.length;
+  box.innerHTML = AC_LIST.map((m,i)=>{
+    const jjBadge = m.jenjang==='S2' ? '<span class="badge info" style="margin-left:6px">S2</span>' : (m.jenjang==='S1' ? '<span class="badge ok" style="margin-left:6px">S1</span>' : '');
+    return `
+      <div class="suggestion-item${i===AC_INDEX?' active':''}" data-idx="${i}" role="option">
+        <div class="suggestion-name">${esc(m.nama||'-')}${jjBadge}</div>
+        <div class="suggestion-meta"><b>${esc(m.nim||'-')}</b> · ${esc(m.programStudi||'-')} · Lulus ${esc(m.tahunLulus||'-')}</div>
+      </div>`;
+  }).join('') + `<div class="suggestion-hint">${total} hasil · ↑↓ pilih · Enter konfirmasi · Esc tutup</div>`;
+
+  acOpen();
+  box.querySelectorAll('.suggestion-item').forEach(el=>{
+    el.addEventListener('mousedown', ev=>{
+      ev.preventDefault(); // jangan blur input
+      acPick(Number(el.dataset.idx));
+    });
+  });
+}
+
+async function acFetch(q){
+  if(q.length < AC_MIN_CHARS){ AC_LIST=[]; acClose(); return; }
+  if(q === AC_LAST_QUERY) return;
+  AC_LAST_QUERY = q;
+  acSetLoading(true);
+  try{
+    const r = await apiPost({action:'findbyname', nama:q, limit:15});
+    if(AC_LAST_QUERY !== q) return; // stale
+    AC_LIST = (r && r.matches) || [];
+    AC_INDEX = AC_LIST.length ? 0 : -1;
+    acRender();
+  }catch(e){
+    console.warn('[autocomplete]', e);
+    AC_LIST=[]; acClose();
+  }finally{
+    acSetLoading(false);
+  }
+}
+
+function acPick(idx){
+  const m = AC_LIST[idx];
+  if(!m) return;
+  AC_PICKED = m;
+  $('nama').value = m.nama || '';
+  AC_LAST_QUERY = String(m.nama||'').toLowerCase();
+
+  // Reveal NIM/Prodi
+  $('nimBox').classList.remove('hidden');
+  $('prodiBox').classList.remove('hidden');
+
+  $('nim').value = m.nim || '';
+  $('programStudi').value = m.programStudi || '';
+  $('jenjang').value = m.jenjang || '';
+  if(m.tahunMasuk) $('tahunMasuk').value = m.tahunMasuk;
+  if(m.tahunLulus) $('tahunLulus').value = m.tahunLulus;
+  if(m.email && !val('email')) $('email').value = m.email;
+  if(m.whatsapp && !val('whatsapp')) $('whatsapp').value = m.whatsapp;
+
+  applyJenjang(m.jenjang || '');
+  setFieldError('nama','');
+  acClose();
+  toast('✓ Data ditemukan: ' + m.nama + ' (' + m.nim + ')', 'ok');
+}
+
+function acScrollActive(){
+  const box=$('namaSuggestions');
+  const active = box?.querySelector('.suggestion-item.active');
+  if(active && active.scrollIntoView) active.scrollIntoView({block:'nearest'});
+}
+
+function onNamaInput(){
+  const n = val('nama');
+  AC_PICKED = null; // user mengubah teks — reset pilihan
+
+  // Kelola NIM box
+  if(n.length >= AC_MIN_CHARS){
+    $('nimBox').classList.remove('hidden');
+    $('prodiBox').classList.remove('hidden');
+  } else {
+    $('nimBox').classList.add('hidden');
+    $('prodiBox').classList.add('hidden');
+    $('nim').value='';
+    $('programStudi').value='';
+    $('jenjang').value='';
+    applyJenjang('');
+  }
+  updateStudentBanner(val('jenjang'), n, val('nim'));
+
+  if(AC_TIMER) clearTimeout(AC_TIMER);
+  AC_TIMER = setTimeout(()=>acFetch(n), AC_DEBOUNCE);
+}
+
+function onNamaKeydown(e){
+  const box=$('namaSuggestions');
+  const isOpen = box && !box.classList.contains('hidden');
+  if(!isOpen) return;
+  if(e.key==='ArrowDown'){
+    e.preventDefault();
+    AC_INDEX = AC_LIST.length ? ((AC_INDEX + 1) % AC_LIST.length) : -1;
+    acRender(); acScrollActive();
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    AC_INDEX = AC_LIST.length ? ((AC_INDEX - 1 + AC_LIST.length) % AC_LIST.length) : -1;
+    acRender(); acScrollActive();
+  } else if(e.key==='Enter'){
+    if(AC_INDEX >= 0 && AC_LIST[AC_INDEX]){
+      e.preventDefault();
+      acPick(AC_INDEX);
+    }
+  } else if(e.key==='Escape'){
+    acClose();
+  }
+}
+
+function onNamaBlur(){
+  // delay supaya klik pada saran sempat dieksekusi
+  setTimeout(()=>acClose(), 180);
+}
+
+function onNamaFocus(){
+  const n = val('nama');
+  if(n.length >= AC_MIN_CHARS){
+    if(AC_LIST.length && AC_LAST_QUERY===n.toLowerCase()) acRender();
+    else acFetch(n);
+  }
+}
+
+/* Klik di luar autocomplete → tutup */
+document.addEventListener('click', e=>{
+  const wrap=$('acWrap');
+  if(wrap && !wrap.contains(e.target)) acClose();
+});
+
+/* NIM manual → auto detect prodi & jenjang */
 function detectFromNim(){
   const nim=val('nim');
   if(!/^\d{9}$/.test(nim)){
-    $('programStudi').value='';$('jenjang').value='';applyJenjang('');return;
+    $('programStudi').value='';
+    $('jenjang').value='';
+    applyJenjang('');
+    if(nim.length===0) setFieldError('nim','');
+    return;
   }
   const code=nim.slice(4,6);
   if(code==='41'){
-    $('programStudi').value='S1 Ilmu Komunikasi';$('jenjang').value='S1';applyJenjang('S1');setFieldError('nim','');
+    $('programStudi').value='S1 Ilmu Komunikasi';
+    $('jenjang').value='S1';
+    applyJenjang('S1');
+    setFieldError('nim','');
   } else if(code==='03'){
-    $('programStudi').value='S2 Magister Ilmu Komunikasi';$('jenjang').value='S2';applyJenjang('S2');setFieldError('nim','');
+    $('programStudi').value='S2 Magister Ilmu Komunikasi';
+    $('jenjang').value='S2';
+    applyJenjang('S2');
+    setFieldError('nim','');
   } else {
-    $('programStudi').value='';$('jenjang').value='';applyJenjang('');
+    $('programStudi').value='';
+    $('jenjang').value='';
+    applyJenjang('');
     setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');
   }
 }
@@ -803,6 +1001,7 @@ function validateStep(n){
   if(n===1){
     const nama=val('nama');
     if(!nama || nama.length<3){setFieldError('nama','Nama lengkap wajib diisi (min 3 karakter).');ok=false}
+
     const nim=val('nim');
     if(!nim){setFieldError('nim','NIM wajib diisi.');ok=false}
     else if(!/^\d{9}$/.test(nim)){setFieldError('nim','NIM harus 9 digit angka.');ok=false}
@@ -810,15 +1009,19 @@ function validateStep(n){
       const code=nim.slice(4,6);
       if(code!=='41' && code!=='03'){setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');ok=false}
     }
+
     if(!/^\d{4}$/.test(val('tahunMasuk'))){setFieldError('tahunMasuk','Tahun 4 digit.');ok=false}
     if(!/^\d{4}$/.test(val('tahunLulus'))){setFieldError('tahunLulus','Tahun 4 digit.');ok=false}
     if(!val('jenisKelamin')){setFieldError('jenisKelamin','Wajib dipilih.');ok=false}
+
     const email=val('email');
     if(!email){setFieldError('email','Email wajib diisi.');ok=false}
     else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){setFieldError('email','Email tidak valid.');ok=false}
+
     const wa=val('whatsapp');
     if(!wa){setFieldError('whatsapp','Nomor WhatsApp wajib diisi.');ok=false}
     else if(!/^\d{10,15}$/.test(wa)){setFieldError('whatsapp','Nomor WhatsApp harus 10–15 digit angka.');ok=false}
+
     const jj=val('jenjang');
     if(jj==='S1' && !val('konsentrasiS1')){setFieldError('konsentrasiS1','Wajib dipilih.');ok=false}
     if(jj==='S2' && !val('konsentrasiS2')){setFieldError('konsentrasiS2','Wajib dipilih.');ok=false}
@@ -958,7 +1161,7 @@ function showDashboard(){
   $('profileBadge').textContent=(PROFILE?.nama||'Pengguna')+' · '+role;
   const isAdmin=role==='ADMIN';
   $$('.admin-only').forEach(e=>e.classList.toggle('hidden',!isAdmin));
-  if(role==='KAPRODI_S1'||role==='KAPRODI_S2')accScope='s1';else accScope='all';
+  accScope='all';
   $$('#accScopeBar button').forEach(b=>b.classList.toggle('active',b.dataset.scope===accScope));
   $$('#adminTabs button').forEach(x=>x.classList.remove('active'));
   const firstTab=document.querySelector('#adminTabs button[data-panel="overview"]');if(firstTab)firstTab.classList.add('active');
@@ -1296,26 +1499,15 @@ function bindEvents(){
   $$('#stepIndicator button').forEach(b=>b.onclick=()=>{const t=Number(b.dataset.goto);if(t<=step||validateStep(step)){step=t;updateSteps()}});
   $('tracerForm').onsubmit=(e)=>{e.preventDefault();submitTracer()};
 
+  // Autocomplete nama
   const namaEl=$('nama');
   if(namaEl){
-    namaEl.addEventListener('input',()=>{
-      const n=val('nama');
-      if(n.length>=3){
-        $('nimBox').classList.remove('hidden');
-        $('prodiBox').classList.remove('hidden');
-      } else {
-        $('nimBox').classList.add('hidden');
-        $('prodiBox').classList.add('hidden');
-      }
-      updateStudentBanner(val('jenjang'), n, val('nim'));
-    });
-    namaEl.addEventListener('blur',()=>{
-      if(val('nama').length>=3){
-        $('nimBox').classList.remove('hidden');
-        $('prodiBox').classList.remove('hidden');
-      }
-    });
+    namaEl.addEventListener('input', onNamaInput);
+    namaEl.addEventListener('keydown', onNamaKeydown);
+    namaEl.addEventListener('focus', onNamaFocus);
+    namaEl.addEventListener('blur', onNamaBlur);
   }
+  // NIM manual → auto-detect
   const nimEl=$('nim');
   if(nimEl){
     nimEl.addEventListener('input',detectFromNim);
