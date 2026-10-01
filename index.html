@@ -13,7 +13,7 @@
 <link rel="icon" href="https://i.imgur.com/JkxRYd6.png">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
 <style>
-:root{--bg:#f4f7f6;--card:#fff;--text:#17211d;--muted:#66736d;--line:#dce5e1;--accent:#116149;--accent2:#0c4d3a;--danger:#b42318;--ok:#087443;--warn:#b54708;--info:#1d4ed8;--s1:#059669;--s1-bg:#ecfdf5;--s1-bg2:#d1fae5;--s1-border:#6ee7b7;--s1-dark:#065f46;--s2:#4f46e5;--s2-bg:#eef2ff;--s2-bg2:#e0e7ff;--s2-border:#a5b4fc;--s2-dark:#3730a3;--admin:#d97706;--admin-bg:#fffbeb;--admin-border:#fcd34d;--admin-dark:#92400e;--dekan:#991b1b;--dekan-bg:#fef2f2;--dekan-border:#fca5a5;--wadek:#1d4ed8;--wadek-bg:#eff6ff;--wadek-border:#93c5fd;--mhs:#7c3aed;--mhs-bg:#f5f3ff;--mhs-border:#c4b5fd;--wa:#25d366;--email:#ea4335;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
+:root{--bg:#f4f7f6;--card:#fff;--text:#17211d;--muted:#66736d;--line:#dce5e1;--accent:#116149;--accent2:#0c4d3a;--danger:#b42318;--ok:#087443;--warn:#b54708;--info:#1d4ed8;--s1:#059669;--s1-bg:#ecfdf5;--s1-bg2:#d1fae5;--s1-border:#6ee7b7;--s1-dark:#065f46;--s2:#4f46e5;--s2-bg:#eef2ff;--s2-bg2:#e0e7ff;--s2-border:#a5b4fc;--s2-dark:#3730a3;--admin:#d97706;--admin-bg:#fffbeb;--admin-border:#fcd34d;--admin-dark:#92400e;--mhs:#7c3aed;--mhs-bg:#f5f3ff;--mhs-border:#c4b5fd;--mhs-dark:#5b21b6;--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;min-height:100vh;overscroll-behavior-y:none;padding-left:var(--safe-left);padding-right:var(--safe-right)}
@@ -60,8 +60,8 @@ textarea{min-height:80px;resize:vertical;font-family:inherit}
 .btn:disabled{opacity:.6;cursor:not-allowed}
 .btn.secondary{background:#e7efec;color:#164b3b;box-shadow:none}
 .btn.danger{background:var(--danger)}
-.btn.wa{background:var(--wa)}
-.btn.email{background:var(--email)}
+.btn.wa{background:#25d366}
+.btn.email{background:#ea4335}
 .btn.sm{padding:8px 14px;font-size:13px;border-radius:9px}
 .btn.block{width:100%}
 .actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
@@ -144,11 +144,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 .dropzone:hover{border-color:var(--accent);background:#eef7f3}
 .empty-state{padding:32px 24px;text-align:center;color:var(--muted);font-size:14px;background:#f9fbfa;border-radius:12px;border:1px dashed var(--line)}
 .dash-header{display:flex;align-items:center;gap:18px;padding:20px 24px;background:linear-gradient(135deg,#f8fbfa,#eef6f2);border:2px solid var(--line);border-radius:18px;margin-bottom:20px;flex-wrap:wrap}
-.dash-header.kaprodi-s1{background:linear-gradient(135deg,var(--s1-bg),var(--s1-bg2));border-color:var(--s1-border)}
-.dash-header.kaprodi-s2{background:linear-gradient(135deg,var(--s2-bg),var(--s2-bg2));border-color:var(--s2-border)}
 .dash-header.admin{background:linear-gradient(135deg,var(--admin-bg),#fef3c7);border-color:var(--admin-border)}
-.dash-header.dekan{background:linear-gradient(135deg,var(--dekan-bg),#fee2e2);border-color:var(--dekan-border)}
-.dash-header.wadek{background:linear-gradient(135deg,var(--wadek-bg),#dbeafe);border-color:var(--wadek-border)}
 .dash-header.mhs{background:linear-gradient(135deg,var(--mhs-bg),#ede9fe);border-color:var(--mhs-border)}
 .dash-header .dh-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:32px;background:#fff;flex:0 0 auto}
 .dash-header .dh-info{flex:1;min-width:220px}
@@ -175,7 +171,6 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 .receipt-box h4{margin:0 0 10px;color:var(--s1-dark);font-size:16px}
 .receipt-box p{margin:6px 0;font-size:13.5px;color:var(--s1-dark);line-height:1.6}
 .receipt-box .receipt-id{background:#fff;padding:12px 14px;border-radius:10px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:18px;font-weight:800;color:var(--accent2);letter-spacing:1.5px;text-align:center;margin:12px 0;border:1px solid #6ee7b7}
-.receipt-box .receipt-link{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:var(--accent);color:#fff;border-radius:10px;text-decoration:none;font-weight:700;font-size:13px;border:0;cursor:pointer;font-family:inherit}
 .receipt-box .receipt-email-status{background:#fff;border-radius:10px;padding:10px 14px;margin:10px 0;font-size:13px;border-left:3px solid var(--s1)}
 @media(max-width:900px){.login-shell{grid-template-columns:1fr}.acc-grid{grid-template-columns:1fr}.acc-metrics{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){
@@ -201,7 +196,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
     <img src="https://i.imgur.com/JkxRYd6.png" alt="Logo UPDM (B)" onerror="this.style.display='none'">
     <div class="brand-main">
       <h1>Tracer Study FIKOM UPDM (B)</h1>
-      <p>Modul S1 Ilmu Komunikasi &amp; S2 Magister Ilmu Komunikasi · BAN-PT · LAMSPAK · PDDIKTI</p>
+      <p>Modul S1 Ilmu Komunikasi &amp; S2 Magister Ilmu Komunikasi · LAMSPAK</p>
     </div>
     <div class="header-tools">
       <button type="button" class="conn-pill hidden" id="ubahPassBtn" title="Ubah Password">🔑 Ubah Password</button>
@@ -212,7 +207,6 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
 <nav><div class="wrap navin">
   <button type="button" class="tab active" data-view="form">📝 Tracer Study</button>
-  <button type="button" class="tab" data-view="tracking">🔎 Cek Tracer ID</button>
   <button type="button" class="tab" data-view="admin">📊 Dashboard</button>
 </div></nav>
 
@@ -221,7 +215,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 <section id="view-form">
   <div class="hero-mhs">
     <h2>🎓 Tracer Study Alumni FIKOM</h2>
-    <p>Partisipasi Anda menentukan mutu pendidikan, akreditasi program studi, dan peringkat universitas. Data digunakan untuk <b>BAN-PT</b>, <b>LAMSPAK</b>, dan <b>PDDIKTI</b>.</p>
+    <p>Partisipasi Anda menentukan mutu pendidikan dan akreditasi program studi. Data digunakan untuk pelaporan <b>LAMSPAK</b>.</p>
     <div class="hero-badges">
       <span>📗 S1 Ilmu Komunikasi</span><span>📘 S2 Magister Ilmu Komunikasi</span><span>🔒 Data terenkripsi</span><span>⏱️ ±3 menit</span>
     </div>
@@ -251,7 +245,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
     <form id="tracerForm" novalidate autocomplete="off">
 
-      <!-- ============ STEP 1 — DATA PRIBADI ============ -->
+      <!-- STEP 1 -->
       <div class="step active" data-step="1">
         <h3>Bagian A — Data Pribadi</h3>
 
@@ -289,7 +283,6 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="full"><label for="whatsapp">No. WhatsApp (Indonesia) <span class="req">*</span></label><input id="whatsapp" required inputmode="numeric" maxlength="15" minlength="10" pattern="\d{10,15}" placeholder="08xxxxxxxxxx" autocomplete="tel"><span class="field-error" id="err-whatsapp"></span><p class="hint" style="margin-top:6px">Format: 10–15 digit angka (contoh: 081234567890).</p></div>
         </div>
 
-        <!-- Konsentrasi S1 -->
         <div id="groupS1" class="hidden" style="border:2px solid var(--s1-border);border-radius:12px;padding:16px;background:var(--s1-bg);margin-top:16px">
           <p style="font-weight:800;color:var(--s1-dark);margin:0 0 12px;text-transform:uppercase">Khusus S1 Ilmu Komunikasi</p>
           <div class="grid">
@@ -307,7 +300,6 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           </div>
         </div>
 
-        <!-- Konsentrasi S2 -->
         <div id="groupS2" class="hidden" style="border:2px solid var(--s2-border);border-radius:12px;padding:16px;background:var(--s2-bg);margin-top:16px">
           <p style="font-weight:800;color:var(--s2-dark);margin:0 0 12px;text-transform:uppercase">Khusus S2 Magister Ilmu Komunikasi</p>
           <div class="grid">
@@ -328,7 +320,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
         <div class="stepnav"><button type="button" class="btn next" style="margin-left:auto">Lanjut →</button></div>
       </div>
 
-      <!-- ============ STEP 2 — STATUS & PEKERJAAN ============ -->
+      <!-- STEP 2 -->
       <div class="step" data-step="2">
         <h3>Bagian B — Status &amp; Pekerjaan</h3>
         <div class="cascade-info"><b>Petunjuk:</b> Jawab sesuai kondisi Anda. Pertanyaan lanjutan akan muncul otomatis sesuai jawaban sebelumnya.</div>
@@ -433,33 +425,21 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
   </div>
 </section>
 
-<section id="view-tracking" class="hidden">
-  <div class="card">
-    <h2>Cek Tracer ID</h2>
-    <p class="hint">Masukkan Tracer ID yang Anda terima setelah pengisian berhasil atau dari email ringkasan.</p>
-    <div class="grid">
-      <div><label for="trackingId">Tracer ID</label><input id="trackingId" placeholder="TS-2026-000001" maxlength="20" autocapitalize="characters" autocomplete="off"></div>
-      <div style="align-self:end"><button type="button" id="trackBtn" class="btn">🔎 Cek Status</button></div>
-    </div>
-    <div id="trackResult" style="margin-top:16px"></div>
-  </div>
-</section>
-
 <section id="view-admin" class="hidden">
   <div class="card">
-    <h2>Dashboard Pimpinan &amp; Admin</h2>
+    <h2>Dashboard Admin</h2>
     <div id="adminStatus" class="status"></div>
 
     <div id="loginBox">
       <div class="login-shell">
         <div class="login-hero">
           <h2>Selamat Datang 👋</h2>
-          <p style="font-size:15px;opacity:.9">Portal Eksekutif Tracer Study FIKOM UPDM (B). Fokus indikator LAMSPAK: kurikulum &amp; capaian pembelajaran, kualitas pembelajaran, keterlibatan alumni.</p>
+          <p style="font-size:15px;opacity:.9">Portal Admin Tracer Study FIKOM UPDM (B). Kelola data alumni &amp; indikator LAMSPAK.</p>
         </div>
         <div class="login-form">
           <h3 style="color:#0c4d3a;font-size:24px;margin-bottom:8px">Masuk Sistem</h3>
-          <p class="hint" style="margin-bottom:24px">Gunakan kredensial resmi institusi.</p>
-          <div style="margin-bottom:16px"><label for="username">Username</label><input id="username" autocomplete="username" placeholder="contoh: admin, dekan, wadek"></div>
+          <p class="hint" style="margin-bottom:24px">Gunakan kredensial admin resmi.</p>
+          <div style="margin-bottom:16px"><label for="username">Username</label><input id="username" autocomplete="username" placeholder="admin"></div>
           <div style="margin-bottom:24px;position:relative"><label for="password">Password</label><input id="password" type="password" autocomplete="current-password" placeholder="••••••••"><button type="button" id="togglePass" style="position:absolute;right:12px;top:36px;border:0;background:transparent;font-size:16px;cursor:pointer;padding:8px">👁️</button></div>
           <button type="button" id="loginBtn" class="btn block" style="padding:14px;font-size:15px">Masuk Dashboard →</button>
         </div>
@@ -484,9 +464,9 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
       <div class="subtab" id="adminTabs">
         <button type="button" class="active" data-panel="overview">Ringkasan</button>
         <button type="button" data-panel="responden">Data Responden</button>
-        <button type="button" data-panel="akreditasi">IKU Akreditasi (LAMSPAK)</button>
-        <button type="button" data-panel="reminder" class="pimpinan-only">🔔 Reminder</button>
-        <button type="button" data-panel="masteralumni" class="pimpinan-only">👥 Master Alumni</button>
+        <button type="button" data-panel="akreditasi">IKU LAMSPAK</button>
+        <button type="button" data-panel="reminder">🔔 Reminder</button>
+        <button type="button" data-panel="masteralumni">👥 Master Alumni</button>
         <button type="button" data-panel="adminpanel" class="admin-only">⚙️ Pengaturan</button>
       </div>
 
@@ -545,10 +525,10 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
         </div>
         <div class="acc-metrics" id="accMetrics"></div>
         <div class="acc-grid">
-          <div class="acc-card"><h4>📘 Kurikulum &amp; Capaian Pembelajaran</h4><ul id="accLAMSPAK1"></ul></div>
-          <div class="acc-card"><h4>📘 Kualitas Pembelajaran &amp; Pengalaman Akademik</h4><ul id="accLAMSPAK2"></ul></div>
-          <div class="acc-card"><h4>📘 Keterlibatan Alumni dalam Pengembangan Program</h4><ul id="accLAMSPAK3"></ul></div>
-          <div class="acc-card"><h4>📊 Ringkasan Scope</h4><ul id="accListScope"></ul></div>
+          <div class="acc-card"><h4>📘 Kriteria 1 — VMTS</h4><ul id="accK1"></ul></div>
+          <div class="acc-card"><h4>📘 Kriteria 2 — Tata Pamong &amp; Kerjasama (Alumni)</h4><ul id="accK2"></ul></div>
+          <div class="acc-card"><h4>📘 Kriteria 6 — Pendidikan (Kurikulum &amp; Pembelajaran)</h4><ul id="accK6"></ul></div>
+          <div class="acc-card"><h4>📘 Kriteria 8 — Luaran &amp; Capaian Tridharma</h4><ul id="accK8"></ul></div>
         </div>
       </div>
 
@@ -641,13 +621,13 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
 </main>
 
-<footer>Tracer Study FIKOM UPDM (B) · v16.8.0-manual-nim · Secured &amp; Optimized</footer>
+<footer>Tracer Study FIKOM UPDM (B) · v16.9.0-lamspak · Secured &amp; Optimized</footer>
 <div id="modalRoot"></div>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 'use strict';
-const APP_VERSION_STR='v16.8.0-manual-nim';
+const APP_VERSION_STR='v16.9.0-lamspak';
 const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbxK7iksNxJO4C6-JDQyqAqdUib4uvyWvMZamJG5MBI_l-AWnVoywTMvFnGuD7jX8-Viog/exec';
 const GAS_URL=(localStorage.getItem('ts_gas_url')||DEFAULT_GAS_URL).trim().replace(/\/$/,'');
 const TOTAL_STEPS=2, RESP_PER_PAGE=50, MASTER_PER_PAGE=50;
@@ -660,13 +640,10 @@ const DEFAULT_REMINDER_SETTINGS = {
 };
 let REMINDER_SETTINGS = Object.assign({}, DEFAULT_REMINDER_SETTINGS);
 
+/* Role hanya ADMIN & MAHASISWA */
 const DASH_MAP = {
-  'ADMIN':      {cls:'admin',      icon:'🛡️', title:'Pusat Kendali Admin', desc:'Kontrol penuh data alumni & konfigurasi sistem.', tags:['Full Access','S1 + S2']},
-  'DEKAN':      {cls:'dekan',      icon:'👑', title:'Dashboard Dekanat', desc:'Ringkasan eksekutif fakultas.', tags:['Fakultas','S1 + S2']},
-  'WADEK':      {cls:'wadek',      icon:'🎯', title:'Dashboard Wakil Dekan', desc:'Monitoring partisipasi alumni & response rate.', tags:['Fakultas','Monitoring']},
-  'KAPRODI_S1': {cls:'kaprodi-s1', icon:'📗', title:'Dashboard Kaprodi S1', desc:'Evaluasi kurikulum & karier alumni S1.', tags:['Scope: S1']},
-  'KAPRODI_S2': {cls:'kaprodi-s2', icon:'📘', title:'Dashboard Kaprodi S2', desc:'Dampak magister pada karier alumni S2.', tags:['Scope: S2']},
-  'MAHASISWA':  {cls:'mhs',        icon:'🎓', title:'Dashboard Mahasiswa', desc:'Data pribadi Anda saja.', tags:['Scope: Pribadi']}
+  'ADMIN':     {cls:'admin', icon:'🛡️', title:'Pusat Kendali Admin', desc:'Kelola data alumni, periode, dan indikator LAMSPAK.', tags:['Full Access','S1 + S2','LAMSPAK']},
+  'MAHASISWA': {cls:'mhs',   icon:'🎓', title:'Dashboard Mahasiswa', desc:'Data pribadi Anda saja.', tags:['Scope: Pribadi']}
 };
 
 let TOKEN=sessionStorage.getItem('ts_token')||'';
@@ -694,7 +671,6 @@ function setHTML(id,html){const el=$(id);if(el)el.innerHTML=html}
 function forceReflow(el){if(el)void el.offsetHeight}
 function radioVal(name){const el=document.querySelector(`input[name="${name}"]:checked`);return el?el.value:''}
 
-/* ===== Banner & Receipt ===== */
 function updateStudentBanner(jenjang, nama, nim){
   const b=$('studentBanner'); if(!b) return;
   if(!jenjang){ b.classList.remove('show','s1','s2'); return; }
@@ -716,8 +692,6 @@ function updateStudentBanner(jenjang, nama, nim){
 }
 function showReceiptBox(tracerId, email, emailStatus){
   const box=$('receiptBox'); if(!box) return;
-  const basePath = window.location.origin + window.location.pathname;
-  const trackingLink = basePath + '#tracking=' + encodeURIComponent(tracerId);
   const emailInfo = emailStatus === 'sent'
     ? `<div class="receipt-email-status"><p style="margin:0 0 4px">📧 <b>Ringkasan telah dikirim ke email:</b></p><p style="margin:0"><code>${esc(email||'-')}</code></p></div>`
     : emailStatus === 'failed'
@@ -730,7 +704,6 @@ function showReceiptBox(tracerId, email, emailStatus){
     <div class="receipt-id">${esc(tracerId)}</div>
     ${emailInfo}
     <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:8px">
-      <a href="${esc(trackingLink)}" class="receipt-link">👉 Cek Tracer ID Sekarang</a>
       <button type="button" class="btn secondary sm" id="copyTracerIdBtn">📋 Salin Tracer ID</button>
     </div>`;
   const copyBtn=$('copyTracerIdBtn');
@@ -743,7 +716,6 @@ function showReceiptBox(tracerId, email, emailStatus){
   }}
 }
 
-/* ===== API ===== */
 function b64EncodeUnicode(str){return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)))}
 function toWireParams(data){const p={...data};Object.keys(p).forEach(k=>{if(p[k]!==undefined&&p[k]!==null&&typeof p[k]==='object')p[k]=JSON.stringify(p[k])});return p}
 async function parseResponse(r){const txt=await r.text();let j;try{j=JSON.parse(txt)}catch(_){throw new Error('Server sibuk. Coba lagi.')}if(j.ok===false)throw new Error(j.error||'Permintaan gagal.');return j}
@@ -766,7 +738,6 @@ async function apiGet(data){
   return parseResponse(r);
 }
 
-/* ===== Connection & Meta ===== */
 async function checkConnection(){const dot=$('connDot'),txt=$('connText');try{await apiGet({action:'health'});if(dot)dot.className='conn-dot ok';if(txt)txt.textContent='Terhubung'}catch(e){if(dot)dot.className='conn-dot err';if(txt)txt.textContent='Terputus'}}
 async function refreshNonce(){try{const r=await apiGet({action:'nonce'});if(r&&r.publicNonce){PUBLIC_NONCE=r.publicNonce;return PUBLIC_NONCE}}catch(_){}try{const m=await apiGet({action:'meta'});if(m&&m.publicNonce)PUBLIC_NONCE=m.publicNonce}catch(_){}return PUBLIC_NONCE}
 async function loadMeta(){
@@ -790,30 +761,18 @@ function updateTahunFilterFromData(yearCounts){
   if(years.includes(cur))ft.value=cur;
 }
 
-/* ===== Auto-detect dari NIM ===== */
 function detectFromNim(){
   const nim=val('nim');
   if(!/^\d{9}$/.test(nim)){
-    $('programStudi').value='';
-    $('jenjang').value='';
-    applyJenjang('');
-    return;
+    $('programStudi').value='';$('jenjang').value='';applyJenjang('');return;
   }
   const code=nim.slice(4,6);
   if(code==='41'){
-    $('programStudi').value='S1 Ilmu Komunikasi';
-    $('jenjang').value='S1';
-    applyJenjang('S1');
-    setFieldError('nim','');
+    $('programStudi').value='S1 Ilmu Komunikasi';$('jenjang').value='S1';applyJenjang('S1');setFieldError('nim','');
   } else if(code==='03'){
-    $('programStudi').value='S2 Magister Ilmu Komunikasi';
-    $('jenjang').value='S2';
-    applyJenjang('S2');
-    setFieldError('nim','');
+    $('programStudi').value='S2 Magister Ilmu Komunikasi';$('jenjang').value='S2';applyJenjang('S2');setFieldError('nim','');
   } else {
-    $('programStudi').value='';
-    $('jenjang').value='';
-    applyJenjang('');
+    $('programStudi').value='';$('jenjang').value='';applyJenjang('');
     setFieldError('nim','Kode prodi NIM tidak dikenali (S1=41, S2=03).');
   }
 }
@@ -823,7 +782,6 @@ function applyJenjang(jenjang){
   updateStudentBanner(jenjang, val('nama'), val('nim'));
 }
 
-/* ===== Conditional visibility Bagian B ===== */
 function syncBagianB(){
   const b1=radioVal('b1_bekerjaSebelumLulus');
   const b3=radioVal('b3_wirausahaSebelumLulus');
@@ -839,7 +797,6 @@ document.addEventListener('change',e=>{
   if(e.target && e.target.name && /^b[1-9]_/.test(e.target.name)) syncBagianB();
 });
 
-/* ===== Validasi ===== */
 function validateStep(n){
   clearErrors();
   let ok=true;
@@ -895,7 +852,6 @@ function updateSteps(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ===== Payload ===== */
 function collectPayload(){
   const jenjang=val('jenjang');
   const b1=radioVal('b1_bekerjaSebelumLulus');
@@ -918,12 +874,11 @@ function collectPayload(){
     b9_posisiWirausahaSetelah: b5==='Wirausaha'?radioVal('b9_posisiWirausahaSetelah'):'',
     consentData:true,
     consentContact:false,
-    periodeId:(META&&META.periodeAktif&&META.periodeAktif.id)||(META&&META.periodeAktif&&META.periodeAktif.periodeId)||'',
+    periodeId:(META&&META.periodeAktif&&(META.periodeAktif.id||META.periodeAktif.periodeId))||'',
     _v: APP_VERSION_STR
   };
 }
 
-/* ===== Submit ===== */
 async function submitTracer(){
   if(formSubmitted)return;
   if(!validateStep(1)){step=1;updateSteps();toast('Lengkapi Bagian A terlebih dahulu.','err');return}
@@ -942,7 +897,6 @@ async function submitTracer(){
       const emailAddr=val('email')||(payload.email||'');
       msg('formStatus',`✅ Berhasil! Tracer ID Anda: <b>${esc(tracerId)}</b>`,true);
       toast('Data Tracer Study berhasil disimpan!','ok');
-      $('trackingId').value=tracerId;
       sessionStorage.setItem('last_tracer_id',tracerId);
       let emailStatus='skipped';
       try{
@@ -966,17 +920,6 @@ async function submitTracer(){
   }
 }
 
-/* ===== Tracking ===== */
-async function lookupTracer(){
-  const id=val('trackingId');if(!id)return toast('Masukkan Tracer ID.','err');
-  const box=$('trackResult');box.innerHTML='<p class="hint">Mencari...</p>';
-  try{
-    const r=await apiGet({action:'lookup',tracerId:id}),d=r.data;
-    box.innerHTML=`<div class="card"><p><b>Tracer ID:</b> ${esc(d.tracerId)}</p><p><b>Nama:</b> ${esc(d.nama)}</p><p><b>NIM:</b> ${esc(d.nim)}</p><p><b>Prodi:</b> ${esc(d.programStudi)} (${esc(d.jenjang)})</p><p><b>Tahun Lulus:</b> ${esc(d.tahunLulus)}</p><p><b>Tanggal:</b> ${esc(d.createdAt)}</p></div>`;
-  }catch(e){box.innerHTML=`<p class="status err" style="display:block">${esc(e.message)}</p>`}
-}
-
-/* ===== Login / Dashboard ===== */
 async function login(){
   const username=val('username').toLowerCase(),password=val('password');
   if(!username||!password)return toast('Username dan password wajib diisi.','err');
@@ -1014,16 +957,8 @@ function showDashboard(){
   $('dhTags').innerHTML=m.tags.map(t=>`<span class="badge info">${esc(t)}</span>`).join('');
   $('profileBadge').textContent=(PROFILE?.nama||'Pengguna')+' · '+role;
   const isAdmin=role==='ADMIN';
-  const isPimpinan=['ADMIN','DEKAN','WADEK','KAPRODI_S1','KAPRODI_S2'].includes(role);
   $$('.admin-only').forEach(e=>e.classList.toggle('hidden',!isAdmin));
-  $$('.pimpinan-only').forEach(e=>e.classList.toggle('hidden',!isPimpinan));
-  const fProdi=$('fProdi');
-  if(fProdi){
-    if(role==='KAPRODI_S1'){fProdi.value='S1 Ilmu Komunikasi';fProdi.disabled=true}
-    else if(role==='KAPRODI_S2'){fProdi.value='S2 Magister Ilmu Komunikasi';fProdi.disabled=true}
-    else{fProdi.disabled=false}
-  }
-  if(role==='KAPRODI_S1')accScope='s1';else if(role==='KAPRODI_S2')accScope='s2';else accScope='all';
+  if(role==='KAPRODI_S1'||role==='KAPRODI_S2')accScope='s1';else accScope='all';
   $$('#accScopeBar button').forEach(b=>b.classList.toggle('active',b.dataset.scope===accScope));
   $$('#adminTabs button').forEach(x=>x.classList.remove('active'));
   const firstTab=document.querySelector('#adminTabs button[data-panel="overview"]');if(firstTab)firstTab.classList.add('active');
@@ -1034,7 +969,6 @@ function showDashboard(){
   loadReminderSettings();
 }
 
-/* ===== Charts ===== */
 function destroyChart(id){if(charts[id]){try{charts[id].destroy()}catch(_){}delete charts[id]}}
 function isCanvasVisible(id){const el=$(id);if(!el)return false;if(el.offsetWidth===0&&el.offsetHeight===0)return false;let n=el;while(n){if(n.classList&&n.classList.contains('hidden'))return false;n=n.parentElement}return true}
 function drawBarChart(id,obj,label,color,opts){
@@ -1072,7 +1006,6 @@ function renderChartsForPanel(panelName){
   }
 }
 
-/* ===== Render tables ===== */
 function renderKpi(s){
   const box=$('kpiBox');if(!box)return;
   if(!s){box.innerHTML='<div class="empty-state">Memuat…</div>';return}
@@ -1111,21 +1044,18 @@ function renderRespTable(rows,pagination){
 }
 function renderAccreditationFor(scope){
   const a=ACC_DATA[scope]||(DASH_DATA&&DASH_DATA.accreditation);
-  if(!a){setHTML('accLAMSPAK1','<li>Memuat…</li>');setHTML('accLAMSPAK2','<li>Memuat…</li>');setHTML('accLAMSPAK3','<li>Memuat…</li>');setHTML('accListScope','<li>Memuat…</li>');const m=$('accMetrics');if(m)m.innerHTML='';return}
+  if(!a){setHTML('accK1','<li>Memuat…</li>');setHTML('accK2','<li>Memuat…</li>');setHTML('accK6','<li>Memuat…</li>');setHTML('accK8','<li>Memuat…</li>');const m=$('accMetrics');if(m)m.innerHTML='';return}
   const cur=a.current||{};
   const m=$('accMetrics');
   if(m)m.innerHTML=`
     <div class="acc-metric"><b>${esc(a.scope||'-')}</b><span>Scope</span></div>
-    <div class="acc-metric"><b>${esc(cur.status||'-')}</b><span>Status</span></div>
-    <div class="acc-metric"><b>${(a.kurikulum||[]).length}</b><span>Kurikulum</span></div>
-    <div class="acc-metric"><b>${(a.pembelajaran||[]).length}</b><span>Pembelajaran</span></div>`;
-  setHTML('accLAMSPAK1',(a.kurikulum||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
-  setHTML('accLAMSPAK2',(a.pembelajaran||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
-  setHTML('accLAMSPAK3',(a.keterlibatan||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
-  setHTML('accListScope',`
-    <li><b>Lingkup:</b> ${esc(cur.lingkup||'-')}</li>
-    <li><b>Sumber:</b> ${esc(cur.sumber||'MASTER_ALUMNI + RESPONSES')}</li>
-    <li><b>Filter:</b> ${esc(scope||'all')}</li>`);
+    <div class="acc-metric"><b>${esc(cur.lingkup||'-')}</b><span>Lingkup</span></div>
+    <div class="acc-metric"><b>${(a.kriteria1||[]).length}</b><span>Kriteria 1</span></div>
+    <div class="acc-metric"><b>${(a.kriteria8||[]).length}</b><span>Kriteria 8</span></div>`;
+  setHTML('accK1',(a.kriteria1||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
+  setHTML('accK2',(a.kriteria2||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
+  setHTML('accK6',(a.kriteria6||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
+  setHTML('accK8',(a.kriteria8||[]).map(x=>`<li>${esc(x)}</li>`).join('')||'<li>Tidak ada data</li>');
 }
 function renderMasterTable(items){
   const t=$('masterTable');if(!t)return;
@@ -1326,7 +1256,7 @@ function openUserModal(){
   openModal(`<h3>Tambah/Ubah Pengguna</h3>
     <div style="margin-bottom:10px"><label>Username</label><input id="mUsername"></div>
     <div style="margin-bottom:10px"><label>Nama</label><input id="mNama"></div>
-    <div style="margin-bottom:10px"><label>Role</label><select id="mRole"><option>ADMIN</option><option>KAPRODI_S1</option><option>KAPRODI_S2</option><option>WADEK</option><option>DEKAN</option><option>MAHASISWA</option></select></div>
+    <div style="margin-bottom:10px"><label>Role</label><select id="mRole"><option>ADMIN</option><option>MAHASISWA</option></select></div>
     <div style="margin-bottom:10px"><label>Program Studi</label><input id="mProdi"></div>
     <div style="margin-bottom:10px"><label>Password (kosongkan bila tidak diubah)</label><input id="mPassword" type="password"></div>
     <div style="margin-bottom:14px"><label><input type="checkbox" id="mAktif" checked style="width:auto"> Aktif</label></div>
@@ -1366,7 +1296,6 @@ function bindEvents(){
   $$('#stepIndicator button').forEach(b=>b.onclick=()=>{const t=Number(b.dataset.goto);if(t<=step||validateStep(step)){step=t;updateSteps()}});
   $('tracerForm').onsubmit=(e)=>{e.preventDefault();submitTracer()};
 
-  // Nama → tampilkan field NIM
   const namaEl=$('nama');
   if(namaEl){
     namaEl.addEventListener('input',()=>{
@@ -1387,7 +1316,6 @@ function bindEvents(){
       }
     });
   }
-  // NIM → auto detect prodi & jenjang
   const nimEl=$('nim');
   if(nimEl){
     nimEl.addEventListener('input',detectFromNim);
@@ -1430,11 +1358,7 @@ function bindEvents(){
     loadDashboardData('all');
   };
   $('resetFilter').onclick=()=>{
-    $('fPeriode').value='';$('fTahun').value='';$('fQ').value='';
-    const role=PROFILE?.role;
-    if(role==='KAPRODI_S1')$('fProdi').value='S1 Ilmu Komunikasi';
-    else if(role==='KAPRODI_S2')$('fProdi').value='S2 Magister Ilmu Komunikasi';
-    else $('fProdi').value='';
+    $('fPeriode').value='';$('fTahun').value='';$('fQ').value='';$('fProdi').value='';
     dashFilters={};respPage=1;masterPage=1;ACC_DATA={};
     if(DASH_DATA){delete DASH_DATA.master;delete DASH_DATA.reminder}
     loadDashboardData('all');
@@ -1457,7 +1381,6 @@ function bindEvents(){
     loadDashboardData('all');
   });
 
-  $('trackBtn').onclick=lookupTracer;
   setupMasterUpload();
 }
 
@@ -1467,16 +1390,6 @@ document.addEventListener('DOMContentLoaded',async()=>{
   await loadMeta();
   syncBagianB();
   if(TOKEN&&TOKEN_EXP>Date.now()&&PROFILE)showDashboard();
-  if(window.location.hash&&window.location.hash.indexOf('#tracking=')===0){
-    const tid=decodeURIComponent(window.location.hash.replace('#tracking=',''));
-    if(tid){const tab=document.querySelector('.tab[data-view="tracking"]');if(tab){tab.click();$('trackingId').value=tid;setTimeout(()=>lookupTracer(),300)}}
-  }
-});
-window.addEventListener('hashchange',()=>{
-  if(window.location.hash.indexOf('#tracking=')===0){
-    const tid=decodeURIComponent(window.location.hash.replace('#tracking=',''));
-    if(tid){const tab=document.querySelector('.tab[data-view="tracking"]');if(tab){tab.click();$('trackingId').value=tid;setTimeout(()=>lookupTracer(),300)}}
-  }
 });
 </script>
 </body>
