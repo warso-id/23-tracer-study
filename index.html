@@ -440,7 +440,7 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
             <span class="field-error" id="err-b8_pendapatan"></span>
           </div>
 
-          <!-- ★★★ PERTANYAAN BARU B10 — KESESUAIAN BIDANG ILMU ★★★ -->
+          <!-- B10 — KESESUAIAN BIDANG ILMU -->
           <div class="full hidden" id="b10Box">
             <label>B10. Apakah pekerjaan Anda saat ini sudah sesuai (selaras) dengan bidang ilmu saat kuliah? <span class="req">*</span></label>
             <div class="opt-list">
@@ -450,7 +450,20 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
             </div>
             <span class="field-error" id="err-b10_kesesuaianBidangIlmu"></span>
           </div>
-          <!-- ★★★ END B10 ★★★ -->
+
+          <!-- ★★★ B11 — CARA MENCARI PEKERJAAN (multi-pilih) ★★★ -->
+          <div class="full hidden" id="b11Box">
+            <label>B11. Bagaimana Anda mencari pekerjaan tersebut? <span class="req">*</span> <span class="badge info" style="margin-left:6px">bisa pilih lebih dari satu</span></label>
+            <div class="opt-list">
+              <label class="opt"><input type="checkbox" name="b11_caraMencariKerja" value="Melalui internet / bursa kerja online (LinkedIn, JobStreet, dll.)"> <span class="opt-body"><span class="opt-title">Melalui internet / bursa kerja online</span><span class="opt-sub">LinkedIn, JobStreet, dll.</span></span></label>
+              <label class="opt"><input type="checkbox" name="b11_caraMencariKerja" value="Melalui pusat karir kampus / career center"> <span class="opt-body"><span class="opt-title">Melalui pusat karir kampus / career center</span><span class="opt-sub">Career center kampus</span></span></label>
+              <label class="opt"><input type="checkbox" name="b11_caraMencariKerja" value="Melalui relasi / teman / dosen"> <span class="opt-body"><span class="opt-title">Melalui relasi / teman / dosen</span><span class="opt-sub">Jaringan personal</span></span></label>
+              <label class="opt"><input type="checkbox" name="b11_caraMencariKerja" value="Melamar langsung ke perusahaan"> <span class="opt-body"><span class="opt-title">Melamar langsung ke perusahaan</span><span class="opt-sub">Walk-in / drop CV</span></span></label>
+            </div>
+            <span class="field-error" id="err-b11_caraMencariKerja"></span>
+            <p class="hint" style="margin-top:6px">Pilih <b>minimal satu</b> cara yang Anda gunakan.</p>
+          </div>
+          <!-- ★★★ END B11 ★★★ -->
 
           <div class="full hidden" id="b9Box">
             <label>B9. Jika setelah lulus Anda berwirausaha, posisi Anda sebagai apa? <span class="req">*</span></label>
@@ -542,8 +555,9 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
           <div class="chartbox"><h4>🏛️ Jenis Institusi Setelah Lulus</h4><div class="chartwrap"><canvas id="chB6"></canvas></div></div>
           <div class="chartbox"><h4>⏳ Masa Tunggu Kerja</h4><div class="chartwrap"><canvas id="chB7"></canvas></div></div>
           <div class="chartbox"><h4>💵 Pendapatan Per Bulan</h4><div class="chartwrap"><canvas id="chB8"></canvas></div></div>
-          <!-- ★★★ CHART BARU B10 ★★★ -->
           <div class="chartbox"><h4>🎓 Kesesuaian Pekerjaan dgn Bidang Ilmu</h4><div class="chartwrap"><canvas id="chB10"></canvas></div></div>
+          <!-- ★ CHART B11 ★ -->
+          <div class="chartbox"><h4>🔎 Cara Mencari Pekerjaan (Multi)</h4><div class="chartwrap"><canvas id="chB11"></canvas></div></div>
           <div class="chartbox"><h4>🧑‍💼 Posisi Wirausaha Setelah Lulus</h4><div class="chartwrap"><canvas id="chB9"></canvas></div></div>
           <div class="chartbox"><h4>🎓 Sebaran Program Studi</h4><div class="chartwrap"><canvas id="chProgram"></canvas></div></div>
         </div>
@@ -670,13 +684,13 @@ footer{text-align:center;color:var(--muted);padding:30px;padding-bottom:calc(30p
 
 </main>
 
-<footer>Tracer Study FIKOM UPDM (B) · v18.2.0-b10 · Secured &amp; Optimized</footer>
+<footer>Tracer Study FIKOM UPDM (B) · v18.3.0-b11 · Secured &amp; Optimized</footer>
 <div id="modalRoot"></div>
 <div class="toast-wrap" id="toastWrap"></div>
 
 <script>
 'use strict';
-const APP_VERSION_STR='v18.2.0-b10';
+const APP_VERSION_STR='v18.3.0-b11';
 const DEFAULT_GAS_URL='https://script.google.com/macros/s/AKfycbxK7iksNxJO4C6-JDQyqAqdUib4uvyWvMZamJG5MBI_l-AWnVoywTMvFnGuD7jX8-Viog/exec';
 const GAS_URL=(localStorage.getItem('ts_gas_url')||DEFAULT_GAS_URL).trim().replace(/\/$/,'');
 const TOTAL_STEPS=2, RESP_PER_PAGE=50, MASTER_PER_PAGE=50;
@@ -730,6 +744,8 @@ function clearErrors(){$$('.field-error').forEach(e=>{e.textContent='';e.classLi
 function setHTML(id,html){const el=$(id);if(el)el.innerHTML=html}
 function forceReflow(el){if(el)void el.offsetHeight}
 function radioVal(name){const el=document.querySelector(`input[name="${name}"]:checked`);return el?el.value:''}
+/* ★ helper multi-select (checkbox) ★ */
+function checkboxVals(name){return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el=>String(el.value))}
 
 function updateStudentBanner(jenjang, nama, nim){
   const b=$('studentBanner'); if(!b) return;
@@ -972,8 +988,9 @@ function syncBagianB(){
   $('b6Box').classList.toggle('hidden', b5!=='Bekerja');
   $('b7Box').classList.toggle('hidden', b5!=='Bekerja');
   $('b8Box').classList.toggle('hidden', b5!=='Bekerja');
-  // ★ B10 tampil bila B5 = Bekerja ★
   $('b10Box').classList.toggle('hidden', b5!=='Bekerja');
+  /* ★ B11 tampil bila B5 = Bekerja ★ */
+  $('b11Box').classList.toggle('hidden', b5!=='Bekerja');
   $('b9Box').classList.toggle('hidden', b5!=='Wirausaha');
 }
 document.addEventListener('change',e=>{
@@ -1016,8 +1033,9 @@ function validateStep(n){
       if(!radioVal('b6_jenisInstitusiSetelahLulus')){setFieldError('b6_jenisInstitusiSetelahLulus','Wajib diisi.');ok=false}
       if(!radioVal('b7_masaTunggu')){setFieldError('b7_masaTunggu','Wajib diisi.');ok=false}
       if(!radioVal('b8_pendapatan')){setFieldError('b8_pendapatan','Wajib diisi.');ok=false}
-      // ★ B10 validasi ★
       if(!radioVal('b10_kesesuaianBidangIlmu')){setFieldError('b10_kesesuaianBidangIlmu','Wajib diisi.');ok=false}
+      /* ★ B11 validasi multi-pilih ★ */
+      if(!checkboxVals('b11_caraMencariKerja').length){setFieldError('b11_caraMencariKerja','Pilih minimal satu cara.');ok=false}
     }
     if(b5==='Wirausaha'){if(!radioVal('b9_posisiWirausahaSetelah')){setFieldError('b9_posisiWirausahaSetelah','Wajib diisi.');ok=false}}
   }
@@ -1051,8 +1069,9 @@ function collectPayload(){
     b6_jenisInstitusiSetelahLulus: b5==='Bekerja'?radioVal('b6_jenisInstitusiSetelahLulus'):'',
     b7_masaTunggu: b5==='Bekerja'?radioVal('b7_masaTunggu'):'',
     b8_pendapatan: b5==='Bekerja'?radioVal('b8_pendapatan'):'',
-    // ★ B10 di payload ★
     b10_kesesuaianBidangIlmu: b5==='Bekerja'?radioVal('b10_kesesuaianBidangIlmu'):'',
+    /* ★ B11 sebagai array (multi-pilih) ★ */
+    b11_caraMencariKerja: b5==='Bekerja'?checkboxVals('b11_caraMencariKerja'):[],
     b9_posisiWirausahaSetelah: b5==='Wirausaha'?radioVal('b9_posisiWirausahaSetelah'):'',
     consentData:true,consentContact:false,
     periodeId:(META&&META.periodeAktif&&(META.periodeAktif.periodeId||META.periodeAktif.id))||'',
@@ -1176,8 +1195,9 @@ function renderChartsForPanel(panelName){
     drawBarChart('chB6',c.b6Counts,'Jumlah','#059669',{horizontal:true});
     drawBarChart('chB7',c.b7Buckets,'Jumlah','#7c3aed');
     drawBarChart('chB8',c.b8Counts,'Jumlah','#b54708');
-    // ★ CHART B10 ★
     drawBarChart('chB10',c.b10Counts,'Jumlah','#0891b2');
+    /* ★ chart B11 (multi-pilih → bar horizontal) ★ */
+    drawBarChart('chB11',c.b11Counts,'Jumlah','#0ea5e9',{horizontal:true});
     drawBarChart('chB9',c.b9Counts,'Jumlah','#dc2626');
     drawDoughnutChart('chProgram',c.programCounts);
   }
@@ -1205,7 +1225,8 @@ function renderKpi(s){
     <div class="card" style="padding:12px 16px"><b>${total}</b> dari <b>${totalMaster}</b> alumni terisi (${belum} belum)</div>
     <div class="card" style="padding:12px 16px">B1 Ya: <b>${s.b1Ya||0}</b> · Tidak: <b>${s.b1Tidak||0}</b></div>
     <div class="card" style="padding:12px 16px">B3 Ya: <b>${s.b3Ya||0}</b> · Tidak: <b>${s.b3Tidak||0}</b></div>
-    <div class="card" style="padding:12px 16px">B10 Sesuai: <b>${(s.b10Detail&&s.b10Detail['Ya (Sangat sesuai)'])||0}</b> · Cukup: <b>${(s.b10Detail&&s.b10Detail['Cukup sesuai'])||0}</b> · Tidak: <b>${(s.b10Detail&&s.b10Detail['Tidak sesuai'])||0}</b></div>`;
+    <div class="card" style="padding:12px 16px">B10 Sesuai: <b>${(s.b10Detail&&s.b10Detail['Ya (Sangat sesuai)'])||0}</b> · Cukup: <b>${(s.b10Detail&&s.b10Detail['Cukup sesuai'])||0}</b> · Tidak: <b>${(s.b10Detail&&s.b10Detail['Tidak sesuai'])||0}</b></div>
+    <div class="card" style="padding:12px 16px">B11 Responden: <b>${s.b11Total||0}</b> · Internet: <b>${(s.b11Detail&&s.b11Detail['Melalui internet / bursa kerja online (LinkedIn, JobStreet, dll.)'])||0}</b> · Pusat Karir: <b>${(s.b11Detail&&s.b11Detail['Melalui pusat karir kampus / career center'])||0}</b> · Relasi: <b>${(s.b11Detail&&s.b11Detail['Melalui relasi / teman / dosen'])||0}</b> · Melamar: <b>${(s.b11Detail&&s.b11Detail['Melamar langsung ke perusahaan'])||0}</b></div>`;
   renderSummaryDetail(s);
 }
 function renderSummaryDetail(s){
@@ -1236,6 +1257,10 @@ function renderSummaryDetail(s){
     <div class="summary-card"><h4>B7 — Masa Tunggu Kerja</h4>${rowsFrom(s.b7Detail)}</div>
     <div class="summary-card"><h4>B8 — Pendapatan Per Bulan</h4>${rowsFrom(s.b8Detail)}</div>
     <div class="summary-card"><h4>B10 — Kesesuaian Pekerjaan dgn Bidang Ilmu</h4>${rowsFrom(s.b10Detail)}</div>
+    <div class="summary-card"><h4>B11 — Cara Mencari Pekerjaan (Multi)</h4>
+      <div class="row"><span>Responden B11</span><b class="val">${s.b11Total||0}</b></div>
+      ${rowsFrom(s.b11Detail)}
+    </div>
     <div class="summary-card"><h4>B9 — Posisi Wirausaha (Setelah Lulus)</h4>${rowsFrom(s.b9Detail)}</div>
     <div class="summary-card"><h4>Jenjang Responden</h4>
       <div class="row"><span>S1 Ilmu Komunikasi</span><b class="val">${s.s1||0}</b></div>
@@ -1246,14 +1271,14 @@ function renderSummaryDetail(s){
 function renderRecentTable(rows){
   const t=$('recentTable');if(!t)return;
   if(!rows||!rows.length){t.innerHTML='<tr><td>Belum ada data.</td></tr>';return}
-  t.innerHTML=`<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Setelah Lulus</th><th>B10</th></tr>`+
-    rows.map(r=>`<tr><td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td>${esc(r.programStudi)}</td><td>${esc(r.setelahLulus)}</td><td>${esc(r.b10||'-')}</td></tr>`).join('');
+  t.innerHTML=`<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Setelah Lulus</th><th>B10</th><th>B11</th></tr>`+
+    rows.map(r=>`<tr><td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td>${esc(r.programStudi)}</td><td>${esc(r.setelahLulus)}</td><td>${esc(r.b10||'-')}</td><td>${esc(r.b11||'-')}</td></tr>`).join('');
 }
 function renderRespTable(rows,pagination){
   const t=$('respTable');if(!t)return;
   t.innerHTML=(!rows||!rows.length)?'<tr><td>Tidak ada data.</td></tr>':
-    `<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Jenjang</th><th>Tahun Lulus</th><th>JK</th><th>Email</th><th>WA</th><th>B1</th><th>B3</th><th>B5</th><th>B10</th></tr>`+
-    rows.map(r=>`<tr><td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td>${esc(r.programStudi)}</td><td>${esc(r.jenjang)}</td><td>${esc(r.tahunLulus)}</td><td>${esc(r.jenisKelamin)}</td><td>${esc(r.email)}</td><td>${esc(r.whatsapp)}</td><td>${esc(r.b1)}</td><td>${esc(r.b3)}</td><td>${esc(r.setelahLulus)}</td><td>${esc(r.b10||'-')}</td></tr>`).join('');
+    `<tr><th>Tracer ID</th><th>NIM</th><th>Nama</th><th>Prodi</th><th>Jenjang</th><th>Tahun Lulus</th><th>JK</th><th>Email</th><th>WA</th><th>B1</th><th>B3</th><th>B5</th><th>B10</th><th>B11</th></tr>`+
+    rows.map(r=>`<tr><td>${esc(r.tracerId)}</td><td>${esc(r.nim)}</td><td>${esc(r.nama)}</td><td>${esc(r.programStudi)}</td><td>${esc(r.jenjang)}</td><td>${esc(r.tahunLulus)}</td><td>${esc(r.jenisKelamin)}</td><td>${esc(r.email)}</td><td>${esc(r.whatsapp)}</td><td>${esc(r.b1)}</td><td>${esc(r.b3)}</td><td>${esc(r.setelahLulus)}</td><td>${esc(r.b10||'-')}</td><td>${esc(r.b11||'-')}</td></tr>`).join('');
   $('respInfo')&&($('respInfo').textContent=pagination?`Total ${pagination.total} data · Hal ${pagination.page}/${pagination.totalPages}`:'');
   const pg=$('respPagination');
   if(pg&&pagination){
